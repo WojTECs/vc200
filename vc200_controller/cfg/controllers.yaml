@@ -1,0 +1,12 @@
+# Konfiguracje kontrolerow ros_control
+# Wszystkie kontrolery ros_control i wszystko co z nim zwiazane
+
+# controllers: # przestrzen nazw kontrolerow
+#   imu_sensor:
+#     type: imu_sensor_controller/ImuSensorController
+#     publish_rate: 50
+
+imu_sensor_controller:
+  type: imu_sensor_controller/ImuSensorController
+  publish_rate: 100
+

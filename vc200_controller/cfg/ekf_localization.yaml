@@ -1,0 +1,61 @@
+# Konfiguracja filtru kalmana do okreslania odometri robota
+## wiecej info na: http://docs.ros.org/kinetic/api/robot_localization/html/configuring_robot_localization.html
+
+two_d_mode: true    # Tryb 2D, informacje o predkosci w osi Z sa ignorowane
+publish_tf: false    # Publikuj przeksztalcenie odom_frame -> base_link_frame na /tf
+print_diagnostics: true # Publikuj diagnostyke
+
+odom_frame: /odom    # nazwa ukladu odometrii robota
+base_link_frame: /base # nazwa ukladu bazy robota
+world_frame: /map # nazwa ukladu world
+map_frame: /map # nazwa ukladu mapy
+
+dynamic_process_noise_covariance: true
+
+
+# # Wejscie IMU 0
+imu0: /imu_sensor_controller #_filtered
+imu0_config: [  false,  false,  false,
+                true,  true,  true,
+                false,  false,  false,
+                true,  true,  true, # Wez predkosc katowa w osi z do estymaty
+                true,   true,  true]
+imu0_differential: false
+# imu0_queue_size: 10
+# imu0__nodelay: true
+
+
+
+process_noise_covariance: [0.0001,  0,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,  0.0001,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0, 1e-9,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0, 1e-9,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0, 1e-9,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,  1e-4,   0,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0, 1e-4,     0,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,  1e-4,     0,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,   1e-5,    0,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,  1e5,    0,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,  1e5,    0,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0, 1e-5,    0,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,  1e5,    0,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,  1e5,    0,
+                           0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,   1e5]
+                        # [X,    Y,    Z,    A,    B,    C,   dX,    dY,    dZ,   dA,   dB,   dC,  ddX,  ddY,  ddZ]
+
+# Poczatkowa estymata kovariancji
+initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    1e-9, 0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    1e-9, 0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    1e-9, 0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    1e-9, 0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    1e-9, 0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-9,  0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1e-9,  0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,  0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1e-9, 0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1e-9, 0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1e-9]
