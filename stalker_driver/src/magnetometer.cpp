@@ -55,7 +55,7 @@ MagnetometerFrame::MagnetometerFrame()
   datasetBinarySize = 10;
 }
 
-void UpstreamData::MagnetometerFrame::meanFilter()
+void UpstreamData::MagnetometerFrame::filter()
 {
   data = {};
   for (auto const& dataset : datasets)
@@ -116,7 +116,7 @@ void MagnetometerFrame::deserialize(const uint8_t* iDataStream, const int iDataS
                             (iDataStream[8 + byteShift] << 8) | (iDataStream[9 + byteShift] & 0xFF);
   }
   doTheProcessing();
-  meanFilter();
+  filter();
 }
 
 void MagnetometerFrame::doTheProcessing()

@@ -52,7 +52,7 @@ private:
 
   std::vector<MagnetometerDataset> datasets;
   MagnetometerDataset data;
-  void meanFilter();
+  void filter();
   void doTheProcessing() override;
   // hard_iron
   const float offset_x;

@@ -39,7 +39,7 @@ private:
   DEMAFilter x, y, z;
 
   std::vector<GyroscopeDataset> datasets;
-  void meanFilter();
+  void filter();
   GyroscopeDataset data;
   void doTheProcessing() override;
 

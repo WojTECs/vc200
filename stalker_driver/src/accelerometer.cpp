@@ -41,7 +41,7 @@ void AccelerometerFrame::doTheProcessing()
 
 namespace UpstreamData
 {
-void AccelerometerFrame::meanFilter()
+void AccelerometerFrame::filter()
 {
   data = {};
   for (auto const& dataset : datasets)
@@ -99,7 +99,7 @@ void AccelerometerFrame::deserialize(const uint8_t* iDataStream, const int iData
         (iDataStream[7 + byteShift] << 16) + (iDataStream[8 + byteShift] << 8) + (iDataStream[9 + byteShift] & 0xFF);
   }
   doTheProcessing();
-  meanFilter();
+  filter();
   // print();
 }
 void AccelerometerFrame::print()

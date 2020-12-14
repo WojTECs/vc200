@@ -25,7 +25,7 @@ private:
   DEMAFilter x, y, z;
   std::vector<AccelerometerDataset> datasets;
   AccelerometerDataset data;
-  void meanFilter();
+  void filter();
   bool readyToRead;
   void doTheProcessing() override;
   void print();

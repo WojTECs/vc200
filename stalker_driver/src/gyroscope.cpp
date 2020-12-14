@@ -46,7 +46,7 @@ GyroscopeFrame::GyroscopeFrame() : x(0.05, 0), y(0.05, 0), z(0.05, 0)
   datasetBinarySize = 10;
 }
 
-void UpstreamData::GyroscopeFrame::meanFilter()
+void UpstreamData::GyroscopeFrame::filter()
 {
   data = {};
   for (auto const& dataset : datasets)
@@ -108,7 +108,7 @@ void GyroscopeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize
                             (iDataStream[8 + byteShift] << 8) | (iDataStream[9 + byteShift] & 0xFF);
   }
   doTheProcessing();
-  meanFilter();
+  filter();
 }
 
 void GyroscopeFrame::doTheProcessing()
