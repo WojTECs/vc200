@@ -7,6 +7,7 @@
 #include <hardware_interface/imu_sensor_interface.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <chrono>
+#include <thread>
 namespace vc200_driver
 {
 class IMU : public Component
