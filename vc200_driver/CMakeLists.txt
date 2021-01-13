@@ -103,7 +103,7 @@ find_package(Boost)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
  INCLUDE_DIRS include
-#  LIBRARIES vc200_driver
+ LIBRARIES STinterface
  CATKIN_DEPENDS roscpp stalker_driver
 #  DEPENDS system_lib
 )
@@ -139,9 +139,11 @@ add_library(STinterface
   src/statistics.cpp
   src/timers.cpp
   src/imu.cpp
-  src/component.cpp
 )
-
+target_link_libraries(STinterface
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure

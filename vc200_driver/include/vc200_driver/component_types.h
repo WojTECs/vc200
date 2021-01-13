@@ -1,4 +1,3 @@
-#include "vc200_driver/component.h"
 #include "vc200_driver/accelerometer.h"
 #include "vc200_driver/configuration.h"
 #include "vc200_driver/gyroscope.h"

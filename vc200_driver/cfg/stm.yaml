@@ -1,0 +1,10 @@
+imu:
+  frame_id: "stm"
+  name: "stm_imu"
+  acceleration_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
+  velocity_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
+  # orientation_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001] wylonczone
+  gyro_offset: [0, 0, 0]
+  acc_offset: [0, 0, 0]
+  mag_offset: [-644.25, 236.25, 731.4]
+  mag_scale: [1.0112138016019716, 1.0112138016019716, 0.9783023366714355]

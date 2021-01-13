@@ -1,18 +1,20 @@
 #pragma once
-#include "vc200_driver/component.h"
+
+#include <hardware_interface/imu_sensor_interface.h>
+#include <ros/ros.h>
+#include <tf2/LinearMath/Quaternion.h>
+
+#include <chrono>
+#include <thread>
+
+#include "stalker_driver/STInterfaceClientUDP.h"
 #include "vc200_driver/accelerometer.h"
 #include "vc200_driver/gyroscope.h"
 #include "vc200_driver/magnetometer.h"
-#include "stalker_driver/STInterfaceClientUDP.h"
-#include <hardware_interface/imu_sensor_interface.h>
-#include <tf2/LinearMath/Quaternion.h>
-#include <chrono>
-#include <thread>
-namespace vc200_driver
-{
-class IMU : public Component
-{
-private:
+
+namespace vc200_driver {
+class IMU {
+ private:
   /* data */
 
   double angularVelocity_[3];
@@ -33,9 +35,11 @@ private:
   double accYoffset;
   double accZoffset;
   hardware_interface::ImuSensorHandle::Data imuData;
+  std::shared_ptr<STInterface::STInterfaceClientUDP> stClient_;
+  ros::NodeHandle nh_;
 
-public:
-  IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, std::string n);
+ public:
+  IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh);
   std::vector<float> getRPY();
   Accelerometer accelerometer;
   Gyroscope gyroscope;

@@ -1,40 +1,114 @@
 #include "vc200_driver/imu.h"
-namespace vc200_driver
-{
-IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, std::string n)
-  : Component(st_if, n)
-  // , angularVelocityCov{ 0.04940425075, 0, 0, 0, 0.03813046707, 0, 0, 0, 0.09872148499 }
-  // , linearAccelerationCov{ 0.01420020585, 0, 0, 0, 0.01024185714, 0, 0, 0, 0.009558967642 }
-  // , orientationCov{ 0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001 }
-  // , orientationCov{ -1, 0, 0, 0, -1, 0, 0, 0, -1 }
-  , angularVelocityCov{ 0.0001, 0, 0, 0, 0.0001, 0, 0, 0, 0.0001 }
-  , linearAccelerationCov{ 0.0001, 0, 0, 0, 0.0001, 0, 0, 0, 0.0001 }
-  , orientationCov{ -1, 0, 0, 0, -1, 0, 0, 0, -1 }
+#define cov_matrix(x, y, z) \
+  { x, 0, 0, 0, y, 0, 0, 0, z }
+namespace vc200_driver {
+IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
+  : angularVelocityCov cov_matrix(0.0001, 0.0001, 0.0001)
+  , linearAccelerationCov cov_matrix(0.0001, 0.0001, 0.0001)
+  , orientationCov cov_matrix(-1.0, -1.0, -1.0)
   , gyroXoffset(0.0)
   , gyroYoffset(0.0)
   , gyroZoffset(0.0)
   , accXoffset(0.0)
   , accYoffset(0.0)
   , accZoffset(0.230514)
-{
+  , stClient_(st_if)
+  , nh_(nh) {
   // Accelerometer
   stClient_->addExpectedDataType(accelerometer.upstream);
   // Gyroscope
   stClient_->addExpectedDataType(gyroscope.upstream);
   // Magnetometer
   stClient_->addExpectedDataType(magnetometer.upstream);
-  // imuSensorHandle.
-  imuData.name = "stm_imu";
-  imuData.frame_id = "stm";
-  imuData.angular_velocity = angularVelocity_;
-  imuData.angular_velocity_covariance = angularVelocityCov;
 
+  // name & frame id
+  std::string frame_id = "stm";
+  if (!nh_.getParam("imu/frame_id", frame_id)) {
+    ROS_WARN_STREAM("Can not find frame id name of imu, default: " << frame_id);
+  }
+  imuData.frame_id = frame_id;
+
+  std::string name = "stm_imu";
+  if (!nh_.getParam("imu/name", name)) {
+    ROS_WARN_STREAM("Can not find name of imu, default: " << name);
+  }
+  imuData.name = name;
+
+  // covarinace
+  std::vector<double> acceleration_covariance;
+  acceleration_covariance.resize(9);
+  std::vector<double> velocity_covariance;
+  velocity_covariance.resize(9);
+  std::vector<double> orientation_covariance;
+  orientation_covariance.resize(9);
+
+  if (!nh_.getParam("imu/acceleration_covariance", acceleration_covariance)) {
+    ROS_WARN_STREAM("Can not find acceleration covariance matrix... setting default");
+  } else {
+    std::copy(acceleration_covariance.begin(), acceleration_covariance.end(), linearAccelerationCov);
+  }
   imuData.linear_acceleration = linearAcceleration_;
   imuData.linear_acceleration_covariance = linearAccelerationCov;
 
+  if (!nh_.getParam("imu/velocity_covariance", velocity_covariance)) {
+    ROS_WARN_STREAM("Can not find velocity covariance matrix... setting default");
+  } else {
+    std::copy(velocity_covariance.begin(), velocity_covariance.end(), angularVelocityCov);
+  }
+  imuData.angular_velocity = angularVelocity_;
+  imuData.angular_velocity_covariance = angularVelocityCov;
+
+  if (!nh_.getParam("imu/orientation_covariance", orientation_covariance)) {
+    ROS_WARN_STREAM("Can not find orientation covariance matrix... setting default");
+  } else {
+    std::copy(orientation_covariance.begin(), orientation_covariance.end(), orientationCov);
+  }
   imuData.orientation = orientation_;
   imuData.orientation_covariance = orientationCov;
 
+  // offsets
+
+  std::vector<double> gyro_offset;
+  gyro_offset.resize(3);
+  if (!nh_.getParam("imu/gyro_offset", gyro_offset)) {
+    ROS_WARN_STREAM("Can not find gyroscope offsets... setting default");
+  } else {
+    gyroXoffset = gyro_offset[0];
+    gyroYoffset = gyro_offset[1];
+    gyroZoffset = gyro_offset[2];
+  }
+
+  std::vector<double> acc_offset;
+  acc_offset.resize(3);
+  if (!nh_.getParam("imu/acc_offset", acc_offset)) {
+    ROS_WARN_STREAM("Can not find accelerometer offsets... setting default");
+  } else {
+    accXoffset = acc_offset[0];
+    accYoffset = acc_offset[1];
+    accZoffset = acc_offset[2];
+  }
+
+  std::vector<double> mag_offset;
+  mag_offset.resize(3);
+  if (!nh_.getParam("imu/mag_offset", mag_offset)) {
+    ROS_WARN_STREAM("Can not find magnetometer offsets... setting default");
+  } else {
+    magnetometer.upstream->offset_x = mag_offset[0];
+    magnetometer.upstream->offset_y = mag_offset[1];
+    magnetometer.upstream->offset_z = mag_offset[2];
+  }
+
+  std::vector<double> mag_scale;
+  mag_scale.resize(3);
+  if (!nh_.getParam("imu/mag_scale", mag_scale)) {
+    ROS_WARN_STREAM("Can not find magnetometer scales... setting default");
+  } else {
+    magnetometer.upstream->scale_x = mag_scale[0];
+    magnetometer.upstream->scale_y = mag_scale[1];
+    magnetometer.upstream->scale_z = mag_scale[2];
+  }
+
+  // seting up imu handle
   imuSensorHandle = hardware_interface::ImuSensorHandle(imuData);
   angularVelocity_[0] = 0;
   angularVelocity_[1] = 0;
@@ -44,8 +118,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, std::string n
   linearAcceleration_[2] = 0;
 }
 
-void IMU::clibrate()
-{
+void IMU::clibrate() {
   std::cout << "##### !!! WARNING !!! #####\n";
   std::cout << "  Gyro calibration proces  \n";
   std::cout << "    please wait for 30s    \n";
@@ -56,8 +129,7 @@ void IMU::clibrate()
   std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
   int i = 0;
 
-  while (std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() < 15.0)
-  {
+  while (std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() < 15.0) {
     std::cout << std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
     std::cout << "\r";
 
@@ -82,8 +154,7 @@ void IMU::clibrate()
   std::cout << std::setw(18) << std::left << ("[y]: " + std::to_string(accYoffset) + " ");
   std::cout << std::setw(18) << std::left << ("[z]: " + std::to_string(accZoffset) + " ") << "\n";
 }
-void IMU::readData()
-{
+void IMU::readData() {
   accelerometer.upstream->readData(accBuff);
   gyroscope.upstream->readData(gyroBuff);
   magnetometer.upstream->readData(magBuff);
@@ -104,8 +175,6 @@ void IMU::readData()
   angularVelocity_[1] = gyroBuff.yAxis;
   angularVelocity_[2] = gyroBuff.zAxis;
 }
-void IMU::writeData()
-{
-}
+void IMU::writeData() {}
 
 }  // namespace vc200_driver

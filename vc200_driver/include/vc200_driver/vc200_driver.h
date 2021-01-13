@@ -1,18 +1,17 @@
-#ifndef vc_200_driver
-#define vc_200_driver
+#pragma once
 
-#include <ros/ros.h>
-#include <vector>
-#include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/imu_sensor_interface.h>
 #include <hardware_interface/joint_command_interface.h>
-#include "vc200_driver/component.h"
+#include <hardware_interface/joint_state_interface.h>
+#include <ros/ros.h>
 
-namespace vc_200_driver
-{
-class VC200Driver
-{
-public:
+#include <vector>
+
+#include "stalker_driver/STInterfaceClientUDP.h"
+
+namespace vc_200_driver {
+class VC200Driver {
+ public:
   bool init();
   std::vector<hardware_interface::JointHandle> getPositionJoints();
   std::vector<hardware_interface::JointHandle> getVelocityJoints();
@@ -21,7 +20,7 @@ public:
   void readData();
   void writeData();
 
-private:
+ private:
   // komunikacja z stm32 i obikety przechowujace informacje
   // uchwyty do danych lub interfejsy do danych
   // publishery i diagnostyka
@@ -29,5 +28,3 @@ private:
   // jointy // poszczegolnych elementow
 };
 }  // namespace vc_200_driver
-
-#endif
