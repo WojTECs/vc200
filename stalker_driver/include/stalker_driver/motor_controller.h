@@ -34,10 +34,10 @@ public:
 
 namespace UpstreamData {
 struct MovementInformationDataset {
-  int rightTurnDirection;
-  int leftTurnDirection;
-  int rightTurnValue;
-  int leftTurnValue;
+  int rightWheelDirection;
+  int leftWheelDirection;
+  int rightWheelPwm;
+  int leftWheelPwm;
   int remainedTimeToDrive;
   int howManyQueued;
 };
