@@ -25,7 +25,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, std::string n
   stClient_->addExpectedDataType(magnetometer.upstream);
   // imuSensorHandle.
   imuData.name = "stm_imu";
-  imuData.frame_id = "stm_imu";
+  imuData.frame_id = "stm";
   imuData.angular_velocity = angularVelocity_;
   imuData.angular_velocity_covariance = angularVelocityCov;
 
@@ -86,7 +86,7 @@ void IMU::readData()
 {
   accelerometer.upstream->readData(accBuff);
   gyroscope.upstream->readData(gyroBuff);
-  // magnetometer.upstream->readData(magBuff);
+  magnetometer.upstream->readData(magBuff);
 
   accBuff.xAxis -= accXoffset;
   accBuff.yAxis -= accYoffset;

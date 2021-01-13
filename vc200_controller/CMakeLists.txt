@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(vc200_driver)
+project(vc200_controller)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -8,12 +8,15 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  controller_manager
+  hardware_interface
   roscpp
+  vc200_driver
   stalker_driver
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost)
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -102,9 +105,9 @@ find_package(Boost)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
-#  LIBRARIES vc200_driver
- CATKIN_DEPENDS roscpp stalker_driver
+#  INCLUDE_DIRS include
+#  LIBRARIES vc200_controller
+ CATKIN_DEPENDS controller_manager hardware_interface roscpp vc200_driver stalker_driver
 #  DEPENDS system_lib
 )
 
@@ -120,28 +123,16 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(STalker
-#   src/STalker/DownstreamDataType.cpp
-#   src/STalker/STInterfaceClientUDP.cpp
-#   src/STalker/UpstreamDataType.cpp
-#   src/STalker/accelerometer.cpp
-#   src/STalker/configuration.cpp
-#   src/STalker/gyroscope.cpp
-#   src/STalker/magnetometer.cpp
-#   src/STalker/motor_controller.cpp
-#   src/STalker/statistics.cpp
-#   src/STalker/timers.cpp
-# )
-
-add_library(STinterface
-  src/configuration.cpp
-  src/motor_controller.cpp
-  src/statistics.cpp
-  src/timers.cpp
-  src/imu.cpp
-  src/component.cpp
+add_library(${PROJECT_NAME}
+  src/imu_controller.cpp
+  
 )
-
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  stalker_driver
+  STinterface
+  pthread
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -150,7 +141,7 @@ add_library(STinterface
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(test_node test/test.cpp)
+add_executable(imu_test src/controll.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -163,11 +154,12 @@ add_executable(test_node test/test.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(test_node
+target_link_libraries(imu_test
   ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
+  ${PROJECT_NAME}
   stalker_driver
   STinterface
+  pthread
 )
 
 #############
@@ -217,7 +209,7 @@ target_link_libraries(test_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_vc200_driver.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_vc200_controller.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
