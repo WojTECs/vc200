@@ -11,6 +11,8 @@
 #define RAD_TO_DEG 180.0 / M_PI
 // void clibrateGyro();
 using namespace std;
+float speedCMD = 0;
+void speedCb(const std_msgs::Float32ConstPtr msg) { speedCMD = msg->data; }
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "Stalker");
@@ -38,11 +40,10 @@ int main(int argc, char** argv) {
   vc200_driver::Statistics stats(stCli, nh);
   vc200_driver::Timers timers(stCli, nh);
 
-  // stCli->run();
   std::thread updater([&]() { stCli->run(); });
-  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   Interface::UpstreamData::EncoderDataset enc;
+  Interface::DownstreamData::MovementCommandDataset cmd;
 
   std_msgs::Float32 leftSpeedMsg;
   std_msgs::Float32 leftDistMsg;
@@ -53,10 +54,38 @@ int main(int argc, char** argv) {
   ros::Publisher leftDistPub = nh.advertise<std_msgs::Float32>("leftDistPub", 1);
   ros::Publisher rightSpeedPub = nh.advertise<std_msgs::Float32>("rightSpeedPub", 1);
   ros::Publisher rightDistPub = nh.advertise<std_msgs::Float32>("rightDistPub", 1);
+
+  ros::Subscriber speedCmdSub = nh.subscribe("speed_cmd", 1, speedCb);
   ros::Rate r(10);
-  Interface::DownstreamData::MovementCommandDataset cmd;
-  std::once_flag f;
+
   while (ros::ok()) {
+    cmd.leftDirection = 1;
+    cmd.leftSidePWM = speedCMD;
+    cmd.timeToDrive = 0x1388;
+    cmd.shallQueue = 0;
+
+    motor.sendCommand(cmd);
+    // motor.motorDownstream->setCommand(cmd);
+    // motor.stClient_->publishData(*motor.motorDownstream);
+
+    motor.encUpstream->readData(enc);
+
+    // cout << "leftRotationDirection: " << enc.leftRotationDirection << endl;
+    // cout << "leftSideDistance: " << enc.leftSideDistance.value << endl;
+    // cout << "leftSideVelocity: " << enc.leftSideVelocity.value << endl;
+    leftDistMsg.data = enc.leftSideDistance.value;
+    leftSpeedMsg.data = enc.leftSideVelocity.value;
+    // cout << "rightRotationDirection: " << enc.rightRotationDirection << endl;
+    // cout << "rightSideDistance: " << enc.rightSideDistance.value << endl;
+    // cout << "rightSideVelocity: " << enc.rightSideVelocity.value << endl;
+    rightDistMsg.data = enc.rightSideDistance.value;
+    rightSpeedMsg.data = enc.rightSideVelocity.value;
+
+    leftSpeedPub.publish(leftSpeedMsg);
+    leftDistPub.publish(leftDistMsg);
+    rightSpeedPub.publish(rightSpeedMsg);
+    rightDistPub.publish(rightDistMsg);
+
     // imu.readData();
     // imu.accelerometer.upstream->readData(accData);
     // imu.gyroscope.upstream->readData(gyroData);

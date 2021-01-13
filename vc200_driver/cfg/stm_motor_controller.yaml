@@ -1,0 +1,37 @@
+joint:
+  left:
+    name: "left_wheel"
+    max_command: 10.0
+    encoder_resolution: 100
+
+  right:
+    name: "left_wheel"
+    max_command: 10
+    encoder_resolution: 100
+
+pid:
+  right: 
+    Kp: 0.1
+    Ki: 0.0
+    Kd: 0.0
+    upperLimit: 0.0
+    lowerLimit: 0.0
+    alfa: 0.01
+    windup: 0.0
+    timeout: 5
+    downLimitOn: false
+    upLimitOn: false
+    windupOn: false
+  left: 
+    Kp: 0.1
+    Ki: 0.0
+    Kd: 0.0
+    upperLimit: 0.0
+    lowerLimit: 0.0
+    alfa: 0.01
+    windup: 0.0
+    timeout: 5
+    downLimitOn: false
+    upLimitOn: false
+    windupOn: false
+

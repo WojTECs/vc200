@@ -10,6 +10,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   stalker_driver
+  pid
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +105,7 @@ find_package(Boost)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES STinterface
- CATKIN_DEPENDS roscpp stalker_driver
+ CATKIN_DEPENDS roscpp stalker_driver pid
 #  DEPENDS system_lib
 )
 
@@ -143,6 +144,7 @@ add_library(STinterface
 target_link_libraries(STinterface
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
+  stalker_driver
 )
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
