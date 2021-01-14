@@ -57,6 +57,7 @@ public:
 
 union floatUnion {
   float value;
+  int32_t int_value;
   uint8_t array[sizeof(float)];
 };
 

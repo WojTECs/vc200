@@ -79,11 +79,11 @@ void EncoderFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) 
   data.rightSideDistance.array[1] = iDataStream[15];
   data.rightSideDistance.array[0] = iDataStream[16];
 
-  if (data.leftRotationDirection == 2)
-    data.leftSideVelocity.value = data.leftSideVelocity.value * (-1);
+  // if (data.leftRotationDirection == 2)
+  //   data.leftSideVelocity.value = data.leftSideVelocity.value * (-1);
 
-  if (data.rightRotationDirection == 2)
-    data.rightSideVelocity.value = data.rightSideVelocity.value * (-1);
+  // if (data.rightRotationDirection == 2)
+  //   data.rightSideVelocity.value = data.rightSideVelocity.value * (-1);
 
   doTheProcessing();
 }
