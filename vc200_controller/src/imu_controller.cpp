@@ -1,22 +1,17 @@
 #include "vc200_controller/vc200_imu.h"
 
 namespace vc200_robot_hw {
-VC200RobotHw::VC200RobotHw(
-    std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
-    ros::NodeHandle& nh)
+VC200RobotHw::VC200RobotHw(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle& nh)
     : imu_ctrl(st_if, nh) {
   rateHz_ = 100;
 }
-bool VC200RobotHw::init(ros::NodeHandle& root_nh,
-                        ros::NodeHandle& robot_hw_nh) {
-  imuCalibration = root_nh.advertiseService(
-      "calibrate_imu", &VC200RobotHw::imuCalibrationCb, this);
+bool VC200RobotHw::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {
   for (auto i : imuSensorInterface_.getNames()) {
     std::cout << i << std::endl;
   }
-  imuSensorInterface_.registerHandle(imu_ctrl.imuSensorHandle);
+  imuSensorInterface_.registerHandle(imu_ctrl.getHandle());
 
-  std::cout << imu_ctrl.imuSensorHandle.getName() << std::endl;
+  std::cout << imu_ctrl.getHandle().getName() << std::endl;
 
   registerInterface(&imuSensorInterface_);
 
@@ -31,12 +26,8 @@ bool VC200RobotHw::init(ros::NodeHandle& root_nh,
 
   return true;
 }
-void VC200RobotHw::read(const ros::Time& time, const ros::Duration& period) {
-  imu_ctrl.readData();
-}
+void VC200RobotHw::read(const ros::Time& time, const ros::Duration& period) { imu_ctrl.readData(); }
 
-void VC200RobotHw::write(const ros::Time& time, const ros::Duration& period) {
-  imu_ctrl.writeData();
-}
+void VC200RobotHw::write(const ros::Time& time, const ros::Duration& period) { imu_ctrl.writeData(); }
 
 }  // namespace vc200_robot_hw

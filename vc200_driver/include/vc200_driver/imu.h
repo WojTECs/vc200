@@ -35,6 +35,7 @@ class IMU {
   double accYoffset;
   double accZoffset;
   hardware_interface::ImuSensorHandle::Data imuData;
+  hardware_interface::ImuSensorHandle imuSensorHandle;
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClient_;
   ros::NodeHandle nh_;
 
@@ -44,7 +45,8 @@ class IMU {
   Accelerometer accelerometer;
   Gyroscope gyroscope;
   Magnetometer magnetometer;
-  hardware_interface::ImuSensorHandle imuSensorHandle;
+
+  hardware_interface::ImuSensorHandle getHandle() const;
   void readData();
   void writeData();
   void clibrate();
