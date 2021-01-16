@@ -13,7 +13,7 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   stClient_->addExpectedDataType(encUpstream);
 
   priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
-  joint_left_name = "left_whee";
+  joint_left_name = "left_wheel";
   if (!priv_nh_.getParam("joint/left/name", joint_left_name)) {
     ROS_WARN_STREAM("Can not find name of left joint, default: " << joint_left_name);
   }
@@ -73,6 +73,8 @@ void MotorController::readData() {
   encUpstream->readData(encData);
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
+  std::cout << leftVelocityCommand << std::endl;
+  std::cout << rightVelocityCommand << std::endl;
   leftChannelPid_.update(encData.leftSideVelocity.value);
   rightChannelPid_.update(encData.rightSideVelocity.value);
 
