@@ -73,8 +73,6 @@ void MotorController::readData() {
   encUpstream->readData(encData);
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
-  std::cout << leftVelocityCommand << std::endl;
-  std::cout << rightVelocityCommand << std::endl;
   leftChannelPid_.update(encData.leftSideVelocity.value);
   rightChannelPid_.update(encData.rightSideVelocity.value);
 
