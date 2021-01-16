@@ -89,7 +89,7 @@ void VC200Driver::stop() {
 }
 void VC200Driver::run() {
   if (!running_) {
-    updaterThread_ = std::thread(&VC200Driver::updaterThread_, this);
+    updaterThread_ = std::thread(&VC200Driver::updater, this);
     running_ = true;
   }
 }
