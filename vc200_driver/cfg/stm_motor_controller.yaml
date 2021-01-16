@@ -2,13 +2,13 @@ joint:
   left:
     name: "left_wheel"
     max_command: 10.0
-    encoder_resolution: 100
+    encoder_resolution: 256
 
   right:
-    name: "left_wheel"
-    max_command: 10
-    encoder_resolution: 100
-
+    name: "right_wheel"
+    max_command: 10.0
+    encoder_resolution: 256
+    
 pid:
   right: 
     Kp: 0.1
