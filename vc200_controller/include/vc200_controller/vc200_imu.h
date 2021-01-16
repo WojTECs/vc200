@@ -23,11 +23,7 @@ class VC200RobotHw : public hardware_interface::RobotHW {
   void write(const ros::Time& time, const ros::Duration& period);
 
  private:
-  bool imuCalibrationCb(std_srvs::Empty::Request& req,
-                        std_srvs::Empty::Response& res) {
-    imu_ctrl.clibrate();
-    return true;
-  }
+
   double rateHz_;
   vc200_driver::IMU imu_ctrl;
   ros::ServiceServer imuCalibration;

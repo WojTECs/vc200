@@ -3,17 +3,17 @@
   { x, 0, 0, 0, y, 0, 0, 0, z }
 namespace vc200_driver {
 IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
-  : angularVelocityCov cov_matrix(0.0001, 0.0001, 0.0001)
-  , linearAccelerationCov cov_matrix(0.0001, 0.0001, 0.0001)
-  , orientationCov cov_matrix(-1.0, -1.0, -1.0)
-  , gyroXoffset(0.0)
-  , gyroYoffset(0.0)
-  , gyroZoffset(0.0)
-  , accXoffset(0.0)
-  , accYoffset(0.0)
-  , accZoffset(0.230514)
-  , stClient_(st_if)
-  , nh_(nh) {
+    : angularVelocityCov cov_matrix(0.0001, 0.0001, 0.0001)
+    , linearAccelerationCov cov_matrix(0.0001, 0.0001, 0.0001)
+    , orientationCov cov_matrix(-1.0, -1.0, -1.0)
+    , gyroXoffset(0.0)
+    , gyroYoffset(0.0)
+    , gyroZoffset(0.0)
+    , accXoffset(0.0)
+    , accYoffset(0.0)
+    , accZoffset(0.230514)
+    , stClient_(st_if)
+    , nh_(nh) {
   // Accelerometer
   stClient_->addExpectedDataType(accelerometer.upstream);
   // Gyroscope
@@ -23,13 +23,13 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
 
   // name & frame id
   std::string frame_id = "stm";
-  if (!nh_.getParam("imu/frame_id", frame_id)) {
+  if (!nh_.getParam("frame_id", frame_id)) {
     ROS_WARN_STREAM("Can not find frame id name of imu, default: " << frame_id);
   }
   imuData.frame_id = frame_id;
 
   std::string name = "stm_imu";
-  if (!nh_.getParam("imu/name", name)) {
+  if (!nh_.getParam("name", name)) {
     ROS_WARN_STREAM("Can not find name of imu, default: " << name);
   }
   imuData.name = name;
@@ -42,7 +42,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
   std::vector<double> orientation_covariance;
   orientation_covariance.resize(9);
 
-  if (!nh_.getParam("imu/acceleration_covariance", acceleration_covariance)) {
+  if (!nh_.getParam("acceleration_covariance", acceleration_covariance)) {
     ROS_WARN_STREAM("Can not find acceleration covariance matrix... setting default");
   } else {
     std::copy(acceleration_covariance.begin(), acceleration_covariance.end(), linearAccelerationCov);
@@ -50,7 +50,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
   imuData.linear_acceleration = linearAcceleration_;
   imuData.linear_acceleration_covariance = linearAccelerationCov;
 
-  if (!nh_.getParam("imu/velocity_covariance", velocity_covariance)) {
+  if (!nh_.getParam("velocity_covariance", velocity_covariance)) {
     ROS_WARN_STREAM("Can not find velocity covariance matrix... setting default");
   } else {
     std::copy(velocity_covariance.begin(), velocity_covariance.end(), angularVelocityCov);
@@ -58,7 +58,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
   imuData.angular_velocity = angularVelocity_;
   imuData.angular_velocity_covariance = angularVelocityCov;
 
-  if (!nh_.getParam("imu/orientation_covariance", orientation_covariance)) {
+  if (!nh_.getParam("orientation_covariance", orientation_covariance)) {
     ROS_WARN_STREAM("Can not find orientation covariance matrix... setting default");
   } else {
     std::copy(orientation_covariance.begin(), orientation_covariance.end(), orientationCov);
@@ -70,7 +70,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
 
   std::vector<double> gyro_offset;
   gyro_offset.resize(3);
-  if (!nh_.getParam("imu/gyro_offset", gyro_offset)) {
+  if (!nh_.getParam("gyro_offset", gyro_offset)) {
     ROS_WARN_STREAM("Can not find gyroscope offsets... setting default");
   } else {
     gyroXoffset = gyro_offset[0];
@@ -80,7 +80,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
 
   std::vector<double> acc_offset;
   acc_offset.resize(3);
-  if (!nh_.getParam("imu/acc_offset", acc_offset)) {
+  if (!nh_.getParam("acc_offset", acc_offset)) {
     ROS_WARN_STREAM("Can not find accelerometer offsets... setting default");
   } else {
     accXoffset = acc_offset[0];
@@ -90,7 +90,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
 
   std::vector<double> mag_offset;
   mag_offset.resize(3);
-  if (!nh_.getParam("imu/mag_offset", mag_offset)) {
+  if (!nh_.getParam("mag_offset", mag_offset)) {
     ROS_WARN_STREAM("Can not find magnetometer offsets... setting default");
   } else {
     magnetometer.upstream->offset_x = mag_offset[0];
@@ -100,7 +100,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
 
   std::vector<double> mag_scale;
   mag_scale.resize(3);
-  if (!nh_.getParam("imu/mag_scale", mag_scale)) {
+  if (!nh_.getParam("mag_scale", mag_scale)) {
     ROS_WARN_STREAM("Can not find magnetometer scales... setting default");
   } else {
     magnetometer.upstream->scale_x = mag_scale[0];
@@ -177,4 +177,5 @@ void IMU::readData() {
 }
 void IMU::writeData() {}
 
+hardware_interface::ImuSensorHandle IMU::getHandle() const { return imuSensorHandle; }
 }  // namespace vc200_driver
