@@ -21,7 +21,7 @@ IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHand
   // Magnetometer
   stClient_->addExpectedDataType(magnetometer.upstream);
 
-  priv_nh_ = ros::NodeHandle(nh_,"imu");
+  priv_nh_ = ros::NodeHandle(nh_, "imu");
   // name & frame id
   std::string frame_id = "stm";
   if (!priv_nh_.getParam("frame_id", frame_id)) {
@@ -158,7 +158,7 @@ void IMU::clibrate() {
 void IMU::readData() {
   accelerometer.upstream->readData(accBuff);
   gyroscope.upstream->readData(gyroBuff);
-  magnetometer.upstream->readData(magBuff);
+  // magnetometer.upstream->readData(magBuff);
 
   accBuff.xAxis -= accXoffset;
   accBuff.yAxis -= accYoffset;
