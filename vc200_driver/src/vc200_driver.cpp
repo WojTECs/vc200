@@ -12,7 +12,7 @@
 
 namespace vc200_driver {
 
-VC200Driver::VC200Driver() : connected_(false), runPermission_(false) {
+VC200Driver::VC200Driver() : connected_(false), running_(false) {
   try {
     stClientPtr_ = std::make_shared<STInterface::STInterfaceClientUDP>(1115, "192.168.1.10", "7");
     connected_ = true;
@@ -82,9 +82,17 @@ std::vector<hardware_interface::ImuSensorHandle> VC200Driver::getImuJoints() {
 void VC200Driver::updater() { stClientPtr_->run(); }
 void VC200Driver::stop() {
   stClientPtr_->stop();
-  updaterThread_.join();
+  if (running_) {
+    updaterThread_.join();
+    running_ = false;
+  }
 }
-void VC200Driver::run() { updaterThread_ = std::thread(&VC200Driver::updaterThread_, this); }
+void VC200Driver::run() {
+  if (!running_) {
+    updaterThread_ = std::thread(&VC200Driver::updaterThread_, this);
+    running_ = true;
+  }
+}
 }  // namespace vc200_driver
 
 #endif

@@ -41,7 +41,7 @@ class VC200Driver {
 
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClientPtr_;
   bool connected_;
-  bool runPermission_;
+  bool running_;
   std::thread updaterThread_;
   void updater();
   // komunikacja z stm32 i obikety przechowujace informacje
