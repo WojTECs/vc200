@@ -11,10 +11,10 @@
 #include "vc200_driver/vc200_driver.h"
 
 namespace vc200_robot_hw {
-class VC200RobotHw : public hardware_interface::RobotHW {
+class VC200RobotHW : public hardware_interface::RobotHW {
  public:
-  VC200RobotHw();
-  ~VC200RobotHw();
+  VC200RobotHW();
+  ~VC200RobotHW();
 
   bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh);
   void read(const ros::Time& time, const ros::Duration& period);
@@ -26,9 +26,9 @@ class VC200RobotHw : public hardware_interface::RobotHW {
   std::unique_ptr<vc200_driver::VC200Driver> driverPtr_;
 
   hardware_interface::JointStateInterface jointStateInterface_;
+  hardware_interface::PositionJointInterface positionJointInterface_;
   hardware_interface::VelocityJointInterface velocityJointInterface_;
   hardware_interface::EffortJointInterface effortJointInterface_;
-  hardware_interface::PositionJointInterface positionJointInterface_;
   hardware_interface::ImuSensorInterface imuSensorInterface_;
 };
 

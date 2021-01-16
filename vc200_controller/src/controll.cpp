@@ -6,15 +6,15 @@
 #include "stalker_driver/DownstreamDataType.h"
 #include "stalker_driver/STInterfaceClientUDP.h"
 #include "stalker_driver/UpstreamDataType.h"
-#include "vc200_controller/vc200_imu.h"
+#include "vc200_controller/vc200_robot_hw.h"
 #include "vc200_driver/component_types.h"
+
 using namespace std;
 int main(int argc, char** argv) {
   ros::init(argc, argv, "ll_robot_hw_node");
   ros::NodeHandle nh;
   ros::NodeHandle priv_nh("~");
 
-  std::shared_ptr<STInterface::STInterfaceClientUDP> stCli;
 
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                  ros::console::levels::Debug);
@@ -24,22 +24,7 @@ int main(int argc, char** argv) {
   ros::AsyncSpinner spinner(spinners);
   spinner.start();
 
-  try {
-    stCli = std::make_shared<STInterface::STInterfaceClientUDP>(
-        1115, "192.168.1.10", "7");
-  } catch (const boost::exception& e) {
-    std::string diag = diagnostic_information(e);
-    ROS_FATAL("Exception received during STInterface creation: %s",
-              diag.c_str());
-    return 0;
-  }
-
-  vc200_driver::Configurator conf(stCli, priv_nh);
-  vc200_driver::MotorController motor(stCli, priv_nh);
-  vc200_driver::Statistics stats(stCli, priv_nh);
-  vc200_driver::Timers timers(stCli, priv_nh);
-
-  vc200_robot_hw::VC200RobotHw robot_hw(stCli, priv_nh);
+  vc200_robot_hw::VC200RobotHW robot_hw;
   int num_retries = 5;
 
   if (robot_hw.init(nh, priv_nh) == false) {
@@ -61,7 +46,6 @@ int main(int argc, char** argv) {
   ros::Time prevTime = ros::Time::now();
   double rate_hz = 100;
   ros::Rate rate(rate_hz);
-  std::thread updater([&]() { stCli->run(); });
 
   while (ros::ok()) {
     ros::Time currentTime = ros::Time::now();
@@ -87,7 +71,6 @@ int main(int argc, char** argv) {
     robot_hw.write(currentTime, period);
     rate.sleep();
   }
-  stCli->stop();
-  updater.join();
+
   ros::waitForShutdown();
 }
