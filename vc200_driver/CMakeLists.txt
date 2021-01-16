@@ -140,6 +140,7 @@ add_library(STinterface
   src/statistics.cpp
   src/timers.cpp
   src/imu.cpp
+  src/vc200_driver.cpp
 )
 target_link_libraries(STinterface
   ${catkin_LIBRARIES}

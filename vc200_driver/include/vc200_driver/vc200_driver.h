@@ -5,6 +5,7 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <ros/ros.h>
 
+#include <thread>
 #include <vector>
 
 #include "stalker_driver/STInterfaceClientUDP.h"
@@ -18,8 +19,9 @@ namespace vc200_driver {
 class VC200Driver {
  public:
   VC200Driver();
+  ~VC200Driver();
 
-  bool init(ros::NodeHandle &nh,ros::NodeHandle &priv_nh);
+  bool init(ros::NodeHandle &nh, ros::NodeHandle &priv_nh);
 
   std::vector<hardware_interface::JointHandle> getPositionJoints();
   std::vector<hardware_interface::JointHandle> getVelocityJoints();
@@ -27,6 +29,8 @@ class VC200Driver {
   std::vector<hardware_interface::ImuSensorHandle> getImuJoints();
   void readData();
   void writeData();
+  void run();
+  void stop();
 
  private:
   std::unique_ptr<IMU> imuSensorsPtr_;
@@ -37,6 +41,9 @@ class VC200Driver {
 
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClientPtr_;
   bool connected_;
+  bool runPermission_;
+  std::thread updaterThread_;
+  void updater();
   // komunikacja z stm32 i obikety przechowujace informacje
   // uchwyty do danych lub interfejsy do danych
   // publishery i diagnostyka

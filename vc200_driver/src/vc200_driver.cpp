@@ -12,7 +12,7 @@
 
 namespace vc200_driver {
 
-VC200Driver::VC200Driver() : connected_(false) {
+VC200Driver::VC200Driver() : connected_(false), runPermission_(false) {
   try {
     stClientPtr_ = std::make_shared<STInterface::STInterfaceClientUDP>(1115, "192.168.1.10", "7");
     connected_ = true;
@@ -22,7 +22,7 @@ VC200Driver::VC200Driver() : connected_(false) {
     connected_ = false;
   }
 }
-
+VC200Driver::~VC200Driver() { stop(); }
 bool VC200Driver::init(ros::NodeHandle &nh, ros::NodeHandle &priv_nh) {
   // IMU init
   if (!connected_) {
@@ -79,7 +79,12 @@ std::vector<hardware_interface::ImuSensorHandle> VC200Driver::getImuJoints() {
   imuJoints.push_back(imuSensorsPtr_->getHandle());
   return imuJoints;
 }
-
+void VC200Driver::updater() { stClientPtr_->run(); }
+void VC200Driver::stop() {
+  stClientPtr_->stop();
+  updaterThread_.join();
+}
+void VC200Driver::run() { updaterThread_ = std::thread(&VC200Driver::updaterThread_, this); }
 }  // namespace vc200_driver
 
 #endif
