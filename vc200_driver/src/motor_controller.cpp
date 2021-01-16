@@ -77,11 +77,11 @@ void MotorController::readData() {
 
   leftJointState.effort = motorData.leftWheelPwm;
   leftJointState.velocity = encData.leftSideVelocity.value;
-  leftJointState.position = (int)encData.leftSideDistance.value / joint_left_encoder_resolution;
-  
+  leftJointState.position = (encData.leftSideDistance.int_value / joint_left_encoder_resolution) * 2.0 * M_PI;
+
   rightJointState.effort = motorData.rightWheelPwm;
   rightJointState.velocity = encData.rightSideVelocity.value;
-  rightJointState.position = (int)encData.rightSideDistance.value / joint_right_encoder_resolution;
+  rightJointState.position = (encData.rightSideDistance.int_value / joint_right_encoder_resolution) * 2.0 * M_PI;
 }
 void MotorController::writeData() {
   Interface::DownstreamData::MovementCommandDataset cmd;
@@ -114,5 +114,10 @@ void MotorController::writeData() {
 //   setRightSpeed(right);
 // }
 
-
+std::vector<hardware_interface::JointHandle> MotorController::getJoints() {
+  std::vector<hardware_interface::JointHandle> output;
+  output.push_back(leftJointHandle);
+  output.push_back(rightJointHandle);
+  return output;
+}
 }  // namespace vc200_driver

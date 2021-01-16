@@ -26,7 +26,7 @@ class MotorController {
   std::shared_ptr<Interface::UpstreamData::EncoderFrame> encUpstream;
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClient_;
   ros::NodeHandle nh_;
-
+  std::vector<hardware_interface::JointHandle> getJoints();
   // void setSpeeds(double left, double right);
   // void setLeftSpeed(double left);
   // void setRightSpeed(double right);
