@@ -45,14 +45,14 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   hardware_interface::JointStateHandle state_left_handle(joint_left_name, &leftJointState.position,
                                                          &leftJointState.velocity, &leftJointState.effort);
 
-  hardware_interface::JointHandle left_handle(state_left_handle, &leftCommand);
+  hardware_interface::JointHandle left_handle(state_left_handle, &leftVelocityCommand);
   // leftJointHandle(state_left_handle, &command_[i]);
   leftJointHandle = left_handle;
 
   hardware_interface::JointStateHandle state_right_handle(joint_right_name, &rightJointState.position,
                                                           &rightJointState.velocity, &rightJointState.effort);
 
-  hardware_interface::JointHandle right_handle(state_right_handle, &rightCommand);
+  hardware_interface::JointHandle right_handle(state_right_handle, &rightVelocityCommand);
   // leftJointHandle(state_left_handle, &command_[i]);
   rightJointHandle = right_handle;
 
@@ -70,9 +70,8 @@ void MotorController::readData() {
   Interface::UpstreamData::EncoderDataset encData;
   motorUpstream->readData(motorData);
   encUpstream->readData(encData);
-  leftChannelPid_.setPoint(leftCommand);
-  rightChannelPid_.setPoint(rightCommand);
-
+  leftChannelPid_.setPoint(leftVelocityCommand);
+  rightChannelPid_.setPoint(rightVelocityCommand);
   leftChannelPid_.update(encData.leftSideVelocity.value);
   rightChannelPid_.update(encData.rightSideVelocity.value);
 
@@ -106,14 +105,14 @@ void MotorController::writeData() {
 
   motorDownstream->setCommand(cmd);
 }
-void MotorController::setLeftSpeed(double speed) { leftChannelPid_.setPoint(speed); }
+// void MotorController::setLeftSpeed(double speed) { leftChannelPid_.setPoint(speed); }
 
-void MotorController::setRightSpeed(double speed) { rightChannelPid_.setPoint(speed); }
+// void MotorController::setRightSpeed(double speed) { rightChannelPid_.setPoint(speed); }
 
-void MotorController::setSpeeds(double left, double right) {
-  setLeftSpeed(left);
-  setRightSpeed(right);
-}
+// void MotorController::setSpeeds(double left, double right) {
+//   setLeftSpeed(left);
+//   setRightSpeed(right);
+// }
 
 
 }  // namespace vc200_driver

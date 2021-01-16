@@ -27,9 +27,9 @@ class MotorController {
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClient_;
   ros::NodeHandle nh_;
 
-  void setSpeeds(double left, double right);
-  void setLeftSpeed(double left);
-  void setRightSpeed(double right);
+  // void setSpeeds(double left, double right);
+  // void setLeftSpeed(double left);
+  // void setRightSpeed(double right);
 
   void sendCommand(Interface::DownstreamData::MovementCommandDataset cmd);
 
@@ -42,8 +42,8 @@ class MotorController {
   hardware_interface::JointHandle leftJointHandle;
   joint_state leftJointState;
   joint_state rightJointState;
-  double leftCommand;
-  double rightCommand;
+  double leftVelocityCommand;
+  double rightVelocityCommand;
   hardware_interface::JointHandle rightJointHandle;
   std::string joint_left_name;
   double joint_left_max_command;
