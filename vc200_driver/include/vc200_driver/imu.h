@@ -38,6 +38,7 @@ class IMU {
   hardware_interface::ImuSensorHandle imuSensorHandle;
   std::shared_ptr<STInterface::STInterfaceClientUDP> stClient_;
   ros::NodeHandle nh_;
+  ros::NodeHandle priv_nh_;
 
  public:
   IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh);

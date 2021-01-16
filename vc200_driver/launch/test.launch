@@ -2,9 +2,7 @@
 <launch>
 
     <node name="driver_test" pkg="vc200_driver" type="test_node" output="screen" respawn="true">
-        <rosparam file="$(find vc200_driver)/cfg/stm_imu.yaml" command="load" />
-        <rosparam file="$(find vc200_driver)/cfg/stm_motor_controller.yaml" command="load" />
-
+        <rosparam file="$(find vc200_driver)/cfg/stm_config.yaml" command="load" />
     </node>
 
 </launch>

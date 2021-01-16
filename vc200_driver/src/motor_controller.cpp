@@ -12,33 +12,34 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   stClient_->addExpectedDataType(motorUpstream);
   stClient_->addExpectedDataType(encUpstream);
 
+  priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
   joint_left_name = "left_whee";
-  if (!nh_.getParam("joint/left/name", joint_left_name)) {
+  if (!priv_nh_.getParam("joint/left/name", joint_left_name)) {
     ROS_WARN_STREAM("Can not find name of left joint, default: " << joint_left_name);
   }
 
   joint_left_max_command = 10.0;
-  if (!nh_.getParam("joint/left/max_command", joint_left_max_command)) {
+  if (!priv_nh_.getParam("joint/left/max_command", joint_left_max_command)) {
     ROS_WARN_STREAM("Can not find max command of left joint, default: " << joint_left_max_command);
   }
 
   joint_left_encoder_resolution = 100;
-  if (!nh_.getParam("joint/left/encoder_resolution", joint_left_encoder_resolution)) {
+  if (!priv_nh_.getParam("joint/left/encoder_resolution", joint_left_encoder_resolution)) {
     ROS_WARN_STREAM("Can not find encoder resolution of left joint, default: " << joint_left_encoder_resolution);
   }
 
   joint_right_name = "right_wheel";
-  if (!nh_.getParam("joint/right/name", joint_right_name)) {
+  if (!priv_nh_.getParam("joint/right/name", joint_right_name)) {
     ROS_WARN_STREAM("Can not find name of right joint, default: " << joint_right_name);
   }
 
   joint_right_max_command = 10.0;
-  if (!nh_.getParam("joint/right/max_command", joint_right_max_command)) {
+  if (!priv_nh_.getParam("joint/right/max_command", joint_right_max_command)) {
     ROS_WARN_STREAM("Can not find max command of right joint, default: " << joint_right_max_command);
   }
 
   joint_right_encoder_resolution = 100;
-  if (!nh_.getParam("joint/right/encoder_resolution", joint_right_encoder_resolution)) {
+  if (!priv_nh_.getParam("joint/right/encoder_resolution", joint_right_encoder_resolution)) {
     ROS_WARN_STREAM("Can not find encoder resolution of right joint, default: " << joint_right_encoder_resolution);
   }
 
