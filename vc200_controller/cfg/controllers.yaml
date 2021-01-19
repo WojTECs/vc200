@@ -5,7 +5,10 @@
 #   imu_sensor:
 #     type: imu_sensor_controller/ImuSensorController
 #     publish_rate: 50
-
+state: # nazwa kontrolera (zawsze musi byc zdefiniowana)
+  type: joint_state_controller/JointStateController # typ kontrolera (zawsze musi byc zdefiniowany)
+  publish_rate: 50 # pozostale parametry zalezne od kontrolera
+  
 imu_sensor_controller:
   type: imu_sensor_controller/ImuSensorController
   publish_rate: 100
