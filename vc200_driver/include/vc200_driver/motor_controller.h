@@ -40,17 +40,14 @@ class MotorController {
  private:
   PID leftChannelPid_, rightChannelPid_;
 
-  hardware_interface::JointHandle leftJointHandle;
   joint_state leftJointState;
   joint_state rightJointState;
   double leftVelocityCommand;
   double rightVelocityCommand;
-  hardware_interface::JointHandle rightJointHandle;
-  std::string joint_left_name;
-  double joint_left_max_command;
-  int joint_left_encoder_resolution;
-  std::string joint_right_name;
-  double joint_right_max_command;
-  int joint_right_encoder_resolution;
+  hardware_interface::JointHandle frontLeftJointHandle, rearLeftJointHandle, frontRightJointHandle,
+      rearRightJointHandle;
+
+  double max_command;
+  int encoder_resolution;
 };
 }  // namespace vc200_driver

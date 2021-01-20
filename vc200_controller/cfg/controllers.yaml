@@ -14,10 +14,18 @@ imu_sensor_controller:
   publish_rate: 100
 
 
-left_wheel:
+front_left_velocity:
   type: velocity_controllers/JointVelocityController
-  joint: left_wheel
+  joint: $(arg robot_name)/front_left_wheel_joint
   
-right_wheel:
+front_right_velocity:
   type: velocity_controllers/JointVelocityController
-  joint: right_wheel
+  joint: $(arg robot_name)/front_right_wheel_joint
+
+rear_left_velocity:
+  type: velocity_controllers/JointVelocityController
+  joint: $(arg robot_name)/rear_left_wheel_joint
+  
+rear_right_velocity:
+  type: velocity_controllers/JointVelocityController
+  joint: $(arg robot_name)/rear_right_wheel_joint
