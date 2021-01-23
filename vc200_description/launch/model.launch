@@ -27,6 +27,6 @@
         <param name="use_tf_static" value="$(arg use_tf_static)" />
     </node>
 
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
 
 </launch>

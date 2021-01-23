@@ -14,33 +14,32 @@
       height="${chassis_height}"
       clearence="${clearence}"
     />
-  
     <xacro:wheel 
       name="${robot_name}/front_left_wheel"
       radius="${wheel_radius}"
       width="${wheel_width}"
-      dx="0.1125"
+      dx="${0.235/2.0}"
       dy="${wheel_separation/2.0}"
     />
     <xacro:wheel 
       name="${robot_name}/front_right_wheel"
       radius="${wheel_radius}"
       width="${wheel_width}"
-      dx="0.1125"
+      dx="${0.235/2.0}"
       dy="-${wheel_separation/2.0}"
     />
     <xacro:wheel 
       name="${robot_name}/rear_left_wheel"
       radius="${wheel_radius}"
       width="${wheel_width}"
-      dx="-0.1125"
+      dx="-${0.235/2.0}"
       dy="${wheel_separation/2.0}"
     />
     <xacro:wheel 
       name="${robot_name}/rear_right_wheel"
       radius="${wheel_radius}"
       width="${wheel_width}"
-      dx="-0.1125"
+      dx="-${0.235/2.0}"
       dy="-${wheel_separation/2.0}"
     />
 </robot>

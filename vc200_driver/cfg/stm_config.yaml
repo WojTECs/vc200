@@ -13,7 +13,7 @@ imu:
   # mag_scale: [1.0112138016019716, 1.0112138016019716, 0.9783023366714355]
 
 motor_contoller:
-  max_command: 100.0
+  max_command: 1000.0
   encoders_resolution: 256
   joint:
     front_left:
@@ -27,24 +27,24 @@ motor_contoller:
 
   pid:
     right:
-      Kp: 0.1
+      Kp: 28.0
       Ki: 0.0
       Kd: 0.0
       upperLimit: 0.0
       lowerLimit: 0.0
-      alfa: 0.01
+      alfa: 0.001
       windup: 0.0
       timeout: 5
       downLimitOn: false
       upLimitOn: false
       windupOn: false
     left:
-      Kp: 0.1
+      Kp: 28.0
       Ki: 0.0
       Kd: 0.0
       upperLimit: 0.0
       lowerLimit: 0.0
-      alfa: 0.01
+      alfa: 0.001
       windup: 0.0
       timeout: 5
       downLimitOn: false
