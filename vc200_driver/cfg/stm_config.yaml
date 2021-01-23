@@ -25,28 +25,29 @@ motor_contoller:
     rear_right:
       name: $(arg robot_name)/rear_right_wheel_joint
 
-  pid:
-    right:
-      Kp: 28.0
-      Ki: 0.0
-      Kd: 0.0
-      upperLimit: 0.0
-      lowerLimit: 0.0
-      alfa: 0.001
-      windup: 0.0
-      timeout: 5
-      downLimitOn: false
-      upLimitOn: false
-      windupOn: false
-    left:
-      Kp: 28.0
-      Ki: 0.0
-      Kd: 0.0
-      upperLimit: 0.0
-      lowerLimit: 0.0
-      alfa: 0.001
-      windup: 0.0
-      timeout: 5
-      downLimitOn: false
-      upLimitOn: false
-      windupOn: false
+pid:
+  right:
+    Kp: 28.0
+    Ki: 0.0
+    Kd: 0.0
+    upperLimit: 0.0
+    lowerLimit: 0.0
+    alfa: 0.001
+    windup: 0.0
+    timeout: 5
+    downLimitOn: false
+    upLimitOn: false
+    windupOn: false
+  left:
+    Kp: 28.0
+    Ki: 0.0
+    Kd: 0.0
+    upperLimit: 0.0
+    lowerLimit: 0.0
+    alfa: 0.001
+    windup: 0.0
+    timeout: 5
+    downLimitOn: false
+    upLimitOn: false
+    windupOn: false
+    
