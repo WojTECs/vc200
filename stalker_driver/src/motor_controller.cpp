@@ -1,8 +1,10 @@
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include "stalker_driver/motor_controller.h"
-#include "stalker_driver/UpstreamDataType.h"
+
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 #include "stalker_driver/DownstreamDataType.h"
+#include "stalker_driver/UpstreamDataType.h"
 
 namespace Interface {
 namespace DownstreamData {
@@ -79,12 +81,6 @@ void EncoderFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) 
   data.rightSideDistance.array[1] = iDataStream[15];
   data.rightSideDistance.array[0] = iDataStream[16];
 
-  // if (data.leftRotationDirection == 2)
-  //   data.leftSideVelocity.value = data.leftSideVelocity.value * (-1);
-
-  // if (data.rightRotationDirection == 2)
-  //   data.rightSideVelocity.value = data.rightSideVelocity.value * (-1);
-
   doTheProcessing();
 }
 
@@ -112,10 +108,10 @@ MovementInformationLeftRightFrame::~MovementInformationLeftRightFrame() {
 
 void MovementInformationLeftRightFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   std::lock_guard<std::mutex> lock(dataMutex);
-  data.rightWheelDirection = (iDataStream[0] >> 4) & 0x0F;
-  data.leftWheelDirection = iDataStream[0] & 0x0F;
-  data.rightWheelPwm = (iDataStream[1] << 8) | (iDataStream[2] & 0xFF);
-  data.leftWheelPwm = (iDataStream[3] << 8) | (iDataStream[4] & 0xFF);
+  data.leftWheelDirection = (iDataStream[0] >> 4) & 0x0F;
+  data.rightWheelDirection = iDataStream[0] & 0x0F;
+  data.leftWheelPwm = (iDataStream[1] << 8) | (iDataStream[2] & 0xFF);
+  data.rightWheelPwm = (iDataStream[3] << 8) | (iDataStream[4] & 0xFF);
   data.remainedTimeToDrive = (iDataStream[5] << 8) | (iDataStream[6] & 0xFF);
   data.howManyQueued = iDataStream[7];
   doTheProcessing();

@@ -43,11 +43,11 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   }
 
   encoder_resolution = 256;
-  if (!priv_nh_.getParam("encoder_resolution", encoder_resolution)) {
+  if (!priv_nh_.getParam("encoders_resolution", encoder_resolution)) {
     ROS_WARN_STREAM("Can not find encoder resolution of left joint, default: " << encoder_resolution);
   }
 
-  
+
 
   hardware_interface::JointStateHandle state_front_left_handle(joint_front_left_name, &leftJointState.position,
                                                                &leftJointState.velocity, &leftJointState.effort);
@@ -94,33 +94,40 @@ void MotorController::readData() {
 
   leftJointState.effort = motorData.leftWheelPwm;
   leftJointState.velocity = encData.leftSideVelocity.value;
-  leftJointState.position = (encData.leftSideDistance.int_value / encoder_resolution) * 2.0 * M_PI;
+  leftJointState.position = (encData.leftSideDistance.int_value / (float)encoder_resolution) * 2.0 * M_PI;
 
   rightJointState.effort = motorData.rightWheelPwm;
   rightJointState.velocity = encData.rightSideVelocity.value;
-  rightJointState.position = (encData.rightSideDistance.int_value / encoder_resolution) * 2.0 * M_PI;
+  rightJointState.position = (encData.rightSideDistance.int_value / (float)encoder_resolution) * 2.0 * M_PI;
 }
 void MotorController::writeData() {
   Interface::DownstreamData::MovementCommandDataset cmd;
 
   cmd.leftSidePWM = leftChannelPid_.getControll();
   cmd.rightSidePWM = rightChannelPid_.getControll();
+  // std::cout << "\x1B[2J\x1B[H";
+  // std::cout << "cmd.leftSidePWM: " << cmd.leftSidePWM << std::endl;
+  // std::cout << "cmd.rightSidePWM: " << cmd.rightSidePWM << std::endl;
+  // std::cout << "leftVelocityCommand: " << leftVelocityCommand << std::endl;
+  // std::cout << "rightVelocityCommand: " << rightVelocityCommand << std::endl;
   if (cmd.leftSidePWM != 0.0) {
     cmd.leftDirection = (leftChannelPid_.getPoint() > 0) ? 1 : 2;
+    cmd.leftSidePWM = abs(cmd.leftSidePWM);
   } else {
-    cmd.leftDirection = 0;
+    // cmd.leftDirection = 0;
   }
 
   if (cmd.rightSidePWM != 0.0) {
     cmd.rightDirection = (rightChannelPid_.getPoint() > 0) ? 1 : 2;
+    cmd.rightSidePWM = abs(cmd.rightSidePWM);
   } else {
-    cmd.rightDirection = 0;
+    // cmd.rightDirection = 0;
   }
 
   cmd.shallQueue = 0;
-  cmd.timeToDrive = 100;
+  cmd.timeToDrive = 500;
 
-  motorDownstream->setCommand(cmd);
+  sendCommand(cmd);
 }
 // void MotorController::setLeftSpeed(double speed) { leftChannelPid_.setPoint(speed); }
 
