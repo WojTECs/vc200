@@ -114,14 +114,14 @@ void MotorController::writeData() {
     cmd.leftDirection = (leftChannelPid_.getPoint() > 0) ? 1 : 2;
     cmd.leftSidePWM = abs(cmd.leftSidePWM);
   } else {
-    // cmd.leftDirection = 0;
+    cmd.leftDirection = 0;
   }
 
   if (cmd.rightSidePWM != 0.0) {
     cmd.rightDirection = (rightChannelPid_.getPoint() > 0) ? 1 : 2;
     cmd.rightSidePWM = abs(cmd.rightSidePWM);
   } else {
-    // cmd.rightDirection = 0;
+    cmd.rightDirection = 0;
   }
 
   cmd.shallQueue = 0;
