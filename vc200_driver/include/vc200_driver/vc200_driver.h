@@ -44,10 +44,5 @@ class VC200Driver {
   bool running_;
   std::thread updaterThread_;
   void updater();
-  // komunikacja z stm32 i obikety przechowujace informacje
-  // uchwyty do danych lub interfejsy do danych
-  // publishery i diagnostyka
-  // init
-  // jointy // poszczegolnych elementow
 };
 }  // namespace vc200_driver

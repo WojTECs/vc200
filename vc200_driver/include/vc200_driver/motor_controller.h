@@ -28,9 +28,6 @@ class MotorController {
   ros::NodeHandle nh_;
   ros::NodeHandle priv_nh_;
   std::vector<hardware_interface::JointHandle> getJoints();
-  // void setSpeeds(double left, double right);
-  // void setLeftSpeed(double left);
-  // void setRightSpeed(double right);
 
   void sendCommand(Interface::DownstreamData::MovementCommandDataset cmd);
 
@@ -46,7 +43,7 @@ class MotorController {
   double rightVelocityCommand;
   hardware_interface::JointHandle frontLeftJointHandle, rearLeftJointHandle, frontRightJointHandle,
       rearRightJointHandle;
-
+  
   double max_command;
   int encoder_resolution;
 };

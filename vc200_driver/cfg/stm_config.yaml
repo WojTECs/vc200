@@ -27,27 +27,27 @@ motor_contoller:
 
 pid:
   right:
-    Kp: 28.0
-    Ki: 0.0
-    Kd: 0.0
-    upperLimit: 0.0
-    lowerLimit: 0.0
-    alfa: 0.001
-    windup: 0.0
+    Kp: 100.0 
+    Ki: 7.0
+    Kd: 0.3
+    upperLimit: 1000.0
+    lowerLimit: -1000.0
+    alfa: 0.07
+    windup: 1000.0
     timeout: 5
-    downLimitOn: false
-    upLimitOn: false
-    windupOn: false
+    downLimitOn: true
+    upLimitOn: true
+    windupOn: true
   left:
-    Kp: 28.0
-    Ki: 0.0
-    Kd: 0.0
-    upperLimit: 0.0
-    lowerLimit: 0.0
-    alfa: 0.001
-    windup: 0.0
+    Kp: 100.0 
+    Ki: 7.0
+    Kd: 0.3
+    upperLimit: 1000.0
+    lowerLimit: -1000.0
+    alfa: 0.07
+    windup: 1000.0
     timeout: 5
-    downLimitOn: false
-    upLimitOn: false
-    windupOn: false
+    downLimitOn: true
+    upLimitOn: true
+    windupOn: true
     
