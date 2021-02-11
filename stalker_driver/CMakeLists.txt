@@ -45,6 +45,7 @@ src/magnetometer.cpp
 src/motor_controller.cpp
 src/statistics.cpp
 src/timers.cpp
+src/laser_ruler.cpp
 )
 
 #############

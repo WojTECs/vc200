@@ -14,6 +14,7 @@
 #include "vc200_driver/motor_controller.h"
 #include "vc200_driver/statistics.h"
 #include "vc200_driver/timers.h"
+#include "vc200_driver/laser_ruler.h"
 
 namespace vc200_driver {
 class VC200Driver {
@@ -31,7 +32,7 @@ class VC200Driver {
   void writeData();
   void run();
   void stop();
-
+  std::unique_ptr<LaserRuler> laserRulerPtr_;
  private:
   std::unique_ptr<IMU> imuSensorsPtr_;
   std::unique_ptr<MotorController> motorControllerPtr_;
