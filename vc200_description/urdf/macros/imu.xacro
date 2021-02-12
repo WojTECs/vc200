@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:macro name="pozyx" params="name length width height dx dy dz ar ap ay">
+    <xacro:macro name="imu" params="name length width height dx dy dz ar ap ay">
 
         <link name="${name}_link">
             <collision>
@@ -16,7 +16,7 @@
                 <geometry>
                     <box size="${length} ${width} ${height}" />
                 </geometry>
-                <material name="pozyx" />
+                <material name="imu" />
             </visual>
         </link>
 

@@ -19,4 +19,7 @@
     <material name="lidar">
         <color rgba="1 1 1 1.0"/>
     </material>
+    <material name="imu">
+        <color rgba="1 1 1 1.0"/>
+    </material>
 </robot>

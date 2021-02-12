@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<!-- <robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
-<robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- <robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
 
     <xacro:include filename="$(find vc200_description)/urdf/parameters.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/macros.xacro" />
@@ -55,7 +55,7 @@
       dz="0.205"
       ar="0.0" 
       ap="0.0" 
-      ay="0.0"
+      ay="${PI}"
     />
     <!-- radius="0.035" 
     length="0.0022"  -->
@@ -67,10 +67,13 @@
       height="0.003"
       dx="-0.025"
       dy="0.045"
-      dz="${0.12+clearence+0.003/3}"
+      dz="${0.12+clearence+0.003/2}"
+      ar="0.0"
+      ap="0.0"
+      ay="0.0"
     />
 
-    <xacro:marvelmind 
+    <!-- <xacro:marvelmind 
       name="${robot_name}/marvelmind"
       length ="0.055"
       width ="0.055"
@@ -81,7 +84,20 @@
       ar="0.0"
       ap="0.69813170079"
       ay="0.0"
+    /> -->
+    <xacro:imu 
+      name="${robot_name}/stm_imu"
+      length="0.008"
+      width="0.006"
+      height="0.003"
+      dx="-0.025"
+      dy="0.045"
+      dz="${0.12+clearence+0.003/2 - 0.02}"
+      ar="0.0"
+      ap="0.0"
+      ay="${-PI/2}"
     />
+      
     <xacro:arg name="use_nominal_extrinsics" default="true" />
     <xacro:include filename="$(find vc200_description)/realsense2_description/urdf/_d435i.urdf.xacro"/>
 

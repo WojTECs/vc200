@@ -5,7 +5,7 @@ laser_ruler:
   ruler_lenght: 0.01        # [m]
   distance_increment: 0.1  # [m] distance between sensors
 imu:
-  frame_id: "stm"
+  frame_id: "$(arg robot_name)/stm_imu_link"
   name: "stm_imu"
   acceleration_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
   velocity_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
@@ -33,7 +33,7 @@ motor_contoller:
 
 pid:
   right:
-    Kp: 100.0 
+    Kp: 14.0
     Ki: 7.0
     Kd: 0.3
     upperLimit: 1000.0
@@ -45,7 +45,7 @@ pid:
     upLimitOn: true
     windupOn: true
   left:
-    Kp: 100.0 
+    Kp: 14.0
     Ki: 7.0
     Kd: 0.3
     upperLimit: 1000.0

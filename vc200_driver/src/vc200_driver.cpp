@@ -14,7 +14,7 @@ namespace vc200_driver {
 
 VC200Driver::VC200Driver() : connected_(false), running_(false) {
   try {
-    stClientPtr_ = std::make_shared<STInterface::STInterfaceClientUDP>(1115, "192.168.1.10", "7");
+    stClientPtr_ = std::make_shared<STInterface::STInterfaceClientUDP>(1115, "172.17.10.2", "7");
     connected_ = true;
   } catch (const boost::exception &e) {
     std::string diag = diagnostic_information(e);

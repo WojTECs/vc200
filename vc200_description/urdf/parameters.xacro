@@ -17,5 +17,4 @@
     <xacro:property name="wheel_separation" value="0.3"/>
     <xacro:property name="wheelbase" value="0.24"/>
 
-    wheelbase
 </robot>
