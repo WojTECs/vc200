@@ -40,16 +40,74 @@
     </node>
 
     <node name="pozyx_node" pkg="pozyx_ros_examples" type="posestamped_pub.py" output="screen">
-        <param name="frame_id" type="string" value="$(arg robot_name)/pozyx_link"/>
+        <param name="frame_id" type="string" value="$(arg robot_name)/pozyx_link" />
         <param name="serial_port" type="string" value="/dev/ttyACM0" />
     </node>
 
-    <node name="marvelmind_node" pkg="marvelmind_nav" type="hedge_rcv_bin" output="screen"/>
+    <node name="marvelmind_node" pkg="marvelmind_nav" type="hedge_rcv_bin" output="screen" />
 
-    <include file="$(find hedge_msg_adapter)/launch/hedge_msg_adapter.launch"/>
+    <include file="$(find hedge_msg_adapter)/launch/hedge_msg_adapter.launch" />
+
+    <include file="$(find realsense2_camera)/launch/rs_imu.launch" />
+
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="beacon_imu_broadcaster" args="0 0 0 0 0 0 vc200/base_footprint beacon_imu_link 100" /> -->
+    <node pkg="tf" type="static_transform_publisher" name="beacon_map_broadcaster" args="0 0 0 0 0 0 map beacon_map 100" />
+    <node pkg="tf" type="static_transform_publisher" name="pozyx_broadcaster" args="0 0 0 0 0 0 map pozyx 100" />
+
+    <!-- -1.570796327 -->
+    <!-- Odom-IMU Extended Kalman Filter -->
+    <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_odom" clear_params="true"> 
+        <rosparam command="load" file="$(find linorobot_ekf)/param/ekf/robot_localization_odom.yaml" />
+    </node> -->
 
     <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" output="screen">
-		<rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load"/>
-		<remap from="odometry/filtered" to="odometry"/>
-	</node>
+        <rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load" />
+        <remap from="odometry/filtered" to="odometry" />
+    </node>
+
+
+    <!-- AMCL and Beacon Extended Kalman Filter-->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_map" clear_params="true">
+        <rosparam command="load" file="$(find vc200_controller)/cfg/ekf_localization_map.yaml" />
+    </node>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find vc200_controller)/cfg/maps/map.yaml">
+        <param name="frame_id" value="map" />
+    </node>
+
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <param name="tf_broadcast" value="false"/>
+
+        <param name="base_frame_id" value="vc200/base_footprint"/> <!-- Change this if you want to change your base frame id. -->
+        <param name="odom_frame_id" value="vc200/odom"/>
+
+        <param name="gui_publish_rate" value="10.0"/> <!-- Maximum rate (Hz) at which scans and paths are published for visualization, -1.0 to disable. -->
+        <param name="kld_err" value="0.05"/>
+        <param name="kld_z" value="0.99"/>
+        <param name="laser_lambda_short" value="0.1"/>
+        <param name="laser_likelihood_max_dist" value="2.0"/>
+        <param name="laser_max_beams" value="60"/>	
+        <param name="laser_model_type" value="likelihood_field"/>
+        <param name="laser_sigma_hit" value="0.2"/>
+        <param name="laser_z_hit" value="0.5"/>
+        <param name="laser_z_short" value="0.05"/>
+        <param name="laser_z_max" value="0.05"/>
+        <param name="laser_z_rand" value="0.5"/>
+        <param name="max_particles" value="2000"/>
+        <param name="min_particles" value="500"/>
+        <param name="odom_alpha1" value="0.25"/> <!-- Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion. -->
+        <param name="odom_alpha2" value="0.25"/> <!-- Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion. -->
+        <param name="odom_alpha3" value="0.25"/> <!-- Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion. -->
+        <param name="odom_alpha4" value="0.25"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+        <param name="odom_alpha5" value="0.1"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+        <param name="odom_model_type" value="diff"/>
+        <param name="recovery_alpha_slow" value="0.001"/> <!-- Exponential decay rate for the slow average weight filter, used in deciding when to recover by adding random poses. -->
+        <param name="recovery_alpha_fast" value="0.1"/> <!-- Exponential decay rate for the fast average weight filter, used in deciding when to recover by adding random poses. -->
+        <param name="resample_interval" value="1"/> <!-- Number of filter updates required before resampling. -->
+        <param name="transform_tolerance" value="1.25"/> <!-- Default 0.1; time with which to post-date the transform that is published, to indicate that this transform is valid into the future. -->
+        <param name="update_min_a" value="0.2"/> <!-- Rotational movement required before performing a filter update. 0.1 represents 5.7 degrees  -->
+        <param name="update_min_d" value="0.2"/> <!-- Translational movement required before performing a filter update. -->
+    </node>
+
 </launch>
