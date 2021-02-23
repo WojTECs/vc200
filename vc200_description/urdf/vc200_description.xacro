@@ -73,7 +73,7 @@
       ay="0.0"
     />
 
-    <!-- <xacro:marvelmind 
+    <xacro:marvelmind 
       name="${robot_name}/marvelmind"
       length ="0.055"
       width ="0.055"
@@ -84,7 +84,7 @@
       ar="0.0"
       ap="0.69813170079"
       ay="0.0"
-    /> -->
+    />
     <xacro:imu 
       name="${robot_name}/stm_imu"
       length="0.008"

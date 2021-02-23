@@ -41,7 +41,6 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
 void LaserRuler::publish() {
   if ((future_task_.valid()) && (scans.size() > 0)) {
     future_task_ = std::async([this]() {
-      // std::cout << "dupsko\n";
       msg.echoes = this->scans;
       this->distPublisher.publish(msg);
     });
@@ -49,7 +48,6 @@ void LaserRuler::publish() {
 }
 
 void LaserRuler::readData() {
-  // std::cout << "se czytam z linijki"<<std::endl;
   laserRulerUpstream->readData(data);
   for (size_t i = 0; i < numberOfSensors; i++) {
     scans[i] = data.scan[i];
