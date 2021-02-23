@@ -1,22 +1,18 @@
 #include "stalker_driver/gyroscope.h"
-#include <boost/exception/diagnostic_information.hpp>
+
 #include <math.h>
-namespace Interface
-{
-namespace DownstreamData
-{
-GyroscopeFrame::GyroscopeFrame()
-{
+
+#include <boost/exception/diagnostic_information.hpp>
+namespace Interface {
+namespace DownstreamData {
+GyroscopeFrame::GyroscopeFrame() {
   potocolIndentificator = "GyroscopeFrame";
   stIdentifier = 0x05;
 }
 
-GyroscopeFrame::~GyroscopeFrame()
-{
-}
+GyroscopeFrame::~GyroscopeFrame() {}
 
-std::vector<uint8_t> GyroscopeFrame::serialize()
-{
+std::vector<uint8_t> GyroscopeFrame::serialize() {
   std::vector<uint8_t> output(3);
   std::lock_guard<std::mutex> lock(dataMutex);
   output[0] = stIdentifier;
@@ -26,36 +22,29 @@ std::vector<uint8_t> GyroscopeFrame::serialize()
   return output;
 }
 
-void GyroscopeFrame::setCommand(GyroscopeCommandDataset& in)
-{
+void GyroscopeFrame::setCommand(GyroscopeCommandDataset& in) {
   std::lock_guard<std::mutex> lock(dataMutex);
   command = in;
   doTheProcessing();
 }
 
-void GyroscopeFrame::doTheProcessing()
-{
-}
+void GyroscopeFrame::doTheProcessing() {}
 }  // namespace DownstreamData
 
-namespace UpstreamData
-{
-GyroscopeFrame::GyroscopeFrame() : x(0.05, 0), y(0.05, 0), z(0.05, 0)
-{
+namespace UpstreamData {
+GyroscopeFrame::GyroscopeFrame() : x(0.09, 0), y(0.09, 0), z(0.09, 0) {
   protocolIndentificator = 0x05;
   datasetBinarySize = 10;
 }
 
-void UpstreamData::GyroscopeFrame::filter()
-{
+void UpstreamData::GyroscopeFrame::filter() {
   data = {};
-  for (auto const& dataset : datasets)
-  {
-    // data.xAxis +=dataset.xAxis;
+  for (auto const& dataset : datasets) {
+    // data.xAxis += dataset.xAxis;
     x.filter(dataset.xAxis);
-    // data.yAxis +=dataset.yAxis;
+    // data.yAxis += dataset.yAxis;
     y.filter(dataset.yAxis);
-    // data.zAxis +=dataset.zAxis;
+    // data.zAxis += dataset.zAxis;
     z.filter(dataset.zAxis);
     // std::cout << std::setw(18) << std::left << ("[x]: " + std::to_string(data.xAxis) + " ");
     // std::cout << std::setw(18) << std::left << ("[y]: " + std::to_string(data.yAxis) + " ");
@@ -70,20 +59,15 @@ void UpstreamData::GyroscopeFrame::filter()
   // data.yAxis = (data.yAxis / (float)datasets.size()) * 0.001 * M_PI / 180.0;
   // data.zAxis = (data.zAxis / (float)datasets.size()) * 0.001 * M_PI / 180.0;
 }
-void UpstreamData::GyroscopeFrame::readData(GyroscopeDataset& dest)
-{
+void UpstreamData::GyroscopeFrame::readData(GyroscopeDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
   dest = data;
 }
 
-GyroscopeFrame::~GyroscopeFrame()
-{
-}
+GyroscopeFrame::~GyroscopeFrame() {}
 
-void GyroscopeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize)
-{
-  if (iDataSize % datasetBinarySize != 0)
-  {
+void GyroscopeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
+  if (iDataSize % datasetBinarySize != 0) {
     std::cout << "Bad Gyroscope frame received. Lenght is mismatched" << std::endl;
     return;
   }
@@ -95,8 +79,7 @@ void GyroscopeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize
 
   int byteShift = 0;
 
-  for (int i = 0; i < dataCount; i++)
-  {
+  for (int i = 0; i < dataCount; i++) {
     byteShift = i * datasetBinarySize;
     datasets[i].xAxis = int16_t((iDataStream[0 + byteShift] << 8) | (iDataStream[1 + byteShift] & 0xFF));
 
@@ -111,10 +94,8 @@ void GyroscopeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize
   filter();
 }
 
-void GyroscopeFrame::doTheProcessing()
-{
-  for (int i = 0; i < datasets.size(); i++)
-  {
+void GyroscopeFrame::doTheProcessing() {
+  for (int i = 0; i < datasets.size(); i++) {
     // tranforming on mdps - milidegrees per second using board xnucleo iks01a3
     // multipliers are derived from internal board settings for gyroscope with 250dps max range
     datasets[i].xAxis = datasets[i].xAxis * 8.25;

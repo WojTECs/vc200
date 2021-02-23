@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <node name="driver_test" pkg="vc200_driver" type="test_node" output="screen" respawn="true">
+        <rosparam file="$(find vc200_driver)/cfg/stm_config.yaml" command="load" />
+    </node>
+
+</launch>

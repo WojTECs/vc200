@@ -1,0 +1,32 @@
+<launch>
+    
+    <arg name="model" default="$(find vc200_description)/urdf/vc200_description.xacro"/>
+    <arg name="gui" default="true" />
+    <arg name="rvizconfig" default="$(find vc200_description)/rviz.rviz" />
+
+
+    <arg name="robot_name" default="vc200"/>
+    <arg name="update_rate" default="50.0" />
+    <arg name="ros_control" default="false"/>
+    
+    <param name="robot_description" command="$(find xacro)/xacro -v $(arg model)
+    robot_name:=$(arg robot_name) ros_control:=$(arg ros_control)"/>
+<!-- 
+    <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+    <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+     -->
+
+    <arg name="frequency" default="50.0" />
+    <arg name="ignore_timestamp" default="true" />
+    <arg name="use_tf_static" default="true" />
+    <arg name="gazebo" default="false" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <param name="publish_frequency" value="$(arg frequency)" />
+        <param name="ignore_timestamp" value="$(arg ignore_timestamp)" />
+        <param name="use_tf_static" value="$(arg use_tf_static)" />
+    </node>
+
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
+
+</launch>

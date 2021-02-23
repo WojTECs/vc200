@@ -1,24 +1,19 @@
 #include "stalker_driver/accelerometer.h"
+
+#include <algorithm>
 #include <boost/exception/diagnostic_information.hpp>
 #include <iostream>
-#include <algorithm>
 #include <numeric>
 
-namespace Interface
-{
-namespace DownstreamData
-{
-AccelerometerFrame::AccelerometerFrame()
-{
+namespace Interface {
+namespace DownstreamData {
+AccelerometerFrame::AccelerometerFrame() {
   potocolIndentificator = "AccelerometerFrame";
   stIdentifier = 0x04;
 }
 
-AccelerometerFrame::~AccelerometerFrame()
-{
-}
-std::vector<uint8_t> AccelerometerFrame::serialize()
-{
+AccelerometerFrame::~AccelerometerFrame() {}
+std::vector<uint8_t> AccelerometerFrame::serialize() {
   std::vector<uint8_t> output(3);
   std::lock_guard<std::mutex> lock(dataMutex);
   output[0] = stIdentifier;
@@ -27,30 +22,24 @@ std::vector<uint8_t> AccelerometerFrame::serialize()
   return output;
 }
 
-void AccelerometerFrame::setCommand(AccelerometerCommandDataset& in)
-{
+void AccelerometerFrame::setCommand(AccelerometerCommandDataset& in) {
   std::lock_guard<std::mutex> lock(dataMutex);
   command = in;
   doTheProcessing();
 }
 
-void AccelerometerFrame::doTheProcessing()
-{
-}
+void AccelerometerFrame::doTheProcessing() {}
 }  // namespace DownstreamData
 
-namespace UpstreamData
-{
-void AccelerometerFrame::filter()
-{
+namespace UpstreamData {
+void AccelerometerFrame::filter() {
   data = {};
-  for (auto const& dataset : datasets)
-  {
-    // data.xAxis +=dataset.xAxis;
+  for (auto const& dataset : datasets) {
+    // data.xAxis += dataset.xAxis;
     x.filter(dataset.xAxis);
-    // data.yAxis +=dataset.yAxis;
+    // data.yAxis += dataset.yAxis;
     y.filter(dataset.yAxis);
-    // data.zAxis +=dataset.zAxis;
+    // data.zAxis += dataset.zAxis;
     z.filter(dataset.zAxis);
   }
   data.timestamp = datasets.back().timestamp;
@@ -63,20 +52,15 @@ void AccelerometerFrame::filter()
   // data.yAxis = (data.yAxis / (float)datasets.size()) * 0.00980665;
   // data.zAxis = (data.zAxis / (float)datasets.size()) * 0.00980665;
 }
-AccelerometerFrame::AccelerometerFrame() : x(0.05, 0), y(0.05, 0), z(0.05, 0)
-{
-  protocolIndentificator = uint8_t{ 0x04 };
+AccelerometerFrame::AccelerometerFrame() : x(0.05, 0), y(0.05, 0), z(0.05, 0) {
+  protocolIndentificator = uint8_t{0x04};
   datasetBinarySize = 10;
 }
 
-AccelerometerFrame::~AccelerometerFrame()
-{
-}
+AccelerometerFrame::~AccelerometerFrame() {}
 
-void AccelerometerFrame::deserialize(const uint8_t* iDataStream, const int iDataSize)
-{
-  if (iDataSize % datasetBinarySize != 0)
-  {
+void AccelerometerFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
+  if (iDataSize % datasetBinarySize != 0) {
     // TODO - when the frame is being cut by buffers
     std::cout << "Bad Accelerometer frame received: wrong data lenght" << std::endl;
     return;
@@ -88,8 +72,7 @@ void AccelerometerFrame::deserialize(const uint8_t* iDataStream, const int iData
 
   int byteShift = 0;
 
-  for (int i = 0; i < dataCount; i++)
-  {
+  for (int i = 0; i < dataCount; i++) {
     byteShift = i * datasetBinarySize;
     datasets[i].xAxis = int16_t((iDataStream[0 + byteShift] << 8) | (iDataStream[1 + byteShift] & 0xFF));
     datasets[i].yAxis = int16_t((iDataStream[2 + byteShift] << 8) | (iDataStream[3 + byteShift] & 0xFF));
@@ -102,16 +85,13 @@ void AccelerometerFrame::deserialize(const uint8_t* iDataStream, const int iData
   filter();
   // print();
 }
-void AccelerometerFrame::print()
-{
+void AccelerometerFrame::print() {
   std::cout << std::setw(18) << std::left << ("[X]: " + std::to_string(data.xAxis) + " ");
   std::cout << std::setw(18) << std::left << ("[Y]: " + std::to_string(data.yAxis) + " ");
   std::cout << std::setw(18) << std::left << ("[Z]: " + std::to_string(data.zAxis) + " ") << "\n";
 }
-void AccelerometerFrame::doTheProcessing()
-{
-  for (int i = 0; i < datasets.size(); i++)
-  {
+void AccelerometerFrame::doTheProcessing() {
+  for (int i = 0; i < datasets.size(); i++) {
     // tranforming on mg - miligravitation using board xnucleo cd (like earth gravitation 9.81 m/s)
     // multipliers are derived from internal board settings for accelerometer with 2g max range
     datasets[i].xAxis = datasets[i].xAxis * 0.061;
@@ -120,8 +100,7 @@ void AccelerometerFrame::doTheProcessing()
   }
 }
 
-void AccelerometerFrame::readData(AccelerometerDataset& d)
-{
+void AccelerometerFrame::readData(AccelerometerDataset& d) {
   std::lock_guard<std::mutex> lock(dataMutex);
   d = data;
 }
