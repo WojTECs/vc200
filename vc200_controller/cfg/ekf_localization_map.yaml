@@ -12,7 +12,7 @@ transform_time_offset: 0.1
 smooth_lagged_data: true
 dynamic_process_noise_covariance: false
 
-odom0: /odometry
+odom0: /diff_drive/odom
 odom0_config: [ false,  false,  false,
                 false,  false,  false,
                 true,   true,  false, # Do estymaty wez predkosci liniowe x i y...

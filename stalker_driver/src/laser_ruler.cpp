@@ -38,7 +38,6 @@ void LaserRulerFrame::deserialize(const uint8_t* iDataStream, const int iDataSiz
   } else {
     data.scan[3] = iDataStream[3] / 1000.0;
   }
-  // doTheProcessing();
 }
 
 void LaserRulerFrame::doTheProcessing() {
