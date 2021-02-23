@@ -7,12 +7,14 @@
     <!-- Constants -->
     <xacro:property name="PI" value="3.1415926535897931" />
 
-    <xacro:property name="chassis_lenght" value="0.355" />
+    <xacro:property name="chassis_length" value="0.355" />
     <xacro:property name="chassis_width" value="0.18" />
     <xacro:property name="chassis_height" value="0.108" />
-    <xacro:property name="clearence" value="0.046" />
+    <xacro:property name="clearence" value="0.042" />
 
     <xacro:property name="wheel_radius" value="0.0675" />
     <xacro:property name="wheel_width" value="0.057" />
     <xacro:property name="wheel_separation" value="0.3"/>
+    <xacro:property name="wheelbase" value="0.24"/>
+
 </robot>

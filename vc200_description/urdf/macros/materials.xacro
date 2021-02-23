@@ -8,4 +8,18 @@
     <material name="wheel">
         <color rgba="0 1 1 1.0"/>
     </material>
+
+    <material name="pozyx">
+        <color rgba="1 1 1 1.0"/>
+    </material>
+
+    <material name="marvelmind">
+        <color rgba="0 0 0 1.0"/>
+    </material>
+    <material name="lidar">
+        <color rgba="1 1 1 1.0"/>
+    </material>
+    <material name="imu">
+        <color rgba="1 1 1 1.0"/>
+    </material>
 </robot>

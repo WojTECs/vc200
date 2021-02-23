@@ -4,5 +4,8 @@
     <xacro:include filename="$(find vc200_description)/urdf/macros/chassis.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/wheel.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/materials.xacro" />
-
+    <xacro:include filename="$(find vc200_description)/urdf/macros/pozyx.xacro" />
+    <xacro:include filename="$(find vc200_description)/urdf/macros/marvelmind.xacro" />
+    <xacro:include filename="$(find vc200_description)/urdf/macros/lidar.xacro" />
+    <xacro:include filename="$(find vc200_description)/urdf/macros/imu.xacro" />
 </robot>

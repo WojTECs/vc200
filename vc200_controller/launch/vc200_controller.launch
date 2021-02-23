@@ -27,7 +27,29 @@
         state 
         diff_drive" />
 
-    <include file="$(find vc200_description)/launch/model.launch"/>
+    <include file="$(find vc200_description)/launch/model.launch" />
 
+    <node name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen">
+        <param name="serial_port" type="string" value="/dev/ttyUSB0" />
+        <param name="serial_baudrate" type="int" value="115200" /> <!--A1/A2 -->
+        <!--param name="serial_baudrate"     type="int"    value="256000"-->
+        <!--A3 -->
+        <param name="frame_id" type="string" value="$(arg robot_name)/lidar_link" />
+        <param name="inverted" type="bool" value="false" />
+        <param name="angle_compensate" type="bool" value="true" />
+    </node>
 
+    <node name="pozyx_node" pkg="pozyx_ros_examples" type="posestamped_pub.py" output="screen">
+        <param name="frame_id" type="string" value="$(arg robot_name)/pozyx_link"/>
+        <param name="serial_port" type="string" value="/dev/ttyACM0" />
+    </node>
+
+    <node name="marvelmind_node" pkg="marvelmind_nav" type="hedge_rcv_bin" output="screen"/>
+
+    <include file="$(find hedge_msg_adapter)/launch/hedge_msg_adapter.launch"/>
+
+    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" output="screen">
+		<rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load"/>
+		<remap from="odometry/filtered" to="odometry"/>
+	</node>
 </launch>
