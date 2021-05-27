@@ -1,41 +1,55 @@
 # Konfiguracje kontrolerow ros_control
 # Wszystkie kontrolery ros_control i wszystko co z nim zwiazane
-
-diff_drive:
-  type: "diff_drive_controller/DiffDriveController"
-  left_wheel:
-    [
-      "$(arg robot_name)/front_left_wheel_joint",
-      "$(arg robot_name)/rear_left_wheel_joint",
-    ]
-  right_wheel:
-    [
-      "$(arg robot_name)/front_right_wheel_joint",
-      "$(arg robot_name)/rear_right_wheel_joint",
-    ]
-  publish_rate: 100
-  pose_covariance_diagonal:
-    [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 0.03]
-  twist_covariance_diagonal: [0.001, 0.001, 0.001, 1000000.0, 1000000.0, 0.03]
-  cmd_vel_timeout: 0.5
-
-  base_frame_id: $(arg robot_name)/base_footprint
-  odom_frame_id: $(arg robot_name)/odom
-  wheel_separation: 0.3
-  wheel_radius: 0.0675
-
-  enable_odom_tf: false
-  wheel_separation_multiplier: 1.0 # default: 1.0
-  wheel_radius_multiplier: 1.0 # default: 1.0
-
-
-state: # nazwa kontrolera (zawsze musi byc zdefiniowana)
+joint_state_controller: # nazwa kontrolera (zawsze musi byc zdefiniowana)
   type: joint_state_controller/JointStateController # typ kontrolera (zawsze musi byc zdefiniowany)
   publish_rate: 50 # pozostale parametry zalezne od kontrolera
 
+diff_drive:
+  type: "diff_drive_controller/DiffDriveController"
+  # left_wheel: "$(arg robot_name)/front_left_wheel_joint"
+  left_wheel: "vc200/left_wheel_joint"
+  # right_wheel: "$(arg robot_name)/front_right_wheel_joint"
+  right_wheel: "vc200/right_wheel_joint"
+  publish_rate: 50
+  pose_covariance_diagonal:
+    [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 0.03]
+  twist_covariance_diagonal: [0.001, 0.001, 0.001, 1000000.0, 1000000.0, 0.03]
+  cmd_vel_timeout: 0.25
+
+  base_frame_id: vc200/base_footprint #default: base_link
+
+  # base_frame_id: $(arg robot_name)/base_footprint
+  # odom_frame_id: $(arg robot_name)/odom
+  wheel_separation: 0.3
+  wheel_radius: 0.0675
+
+  enable_odom_tf: true
+  publish_cmd: true
+  # enable_odom_tf: false
+  wheel_separation_multiplier: 1.0 # default: 1.0
+  wheel_radius_multiplier: 1.0 # default: 1.0
+  linear:
+    x:
+      has_velocity_limits: true
+      max_velocity: 1.0 # m/s
+      min_velocity: -0.5 # m/s
+      has_acceleration_limits: true
+      max_acceleration: 0.2 # m/s^2
+      min_acceleration: -0.2 # m/s^2
+      has_jerk_limits: true
+      max_jerk: 5.0 # m/s^3
+  angular:
+    z:
+      has_velocity_limits: true
+      max_velocity: 3.0 # rad/s
+      has_acceleration_limits: true
+      max_acceleration: 0.5 # rad/s^2
+      has_jerk_limits: true
+      max_jerk: 2.5 # rad/s^3
+
 imu_sensor_controller:
   type: imu_sensor_controller/ImuSensorController
-  publish_rate: 100
+  publish_rate: 50
 
 front_left_velocity:
   type: velocity_controllers/JointVelocityController
@@ -44,11 +58,3 @@ front_left_velocity:
 front_right_velocity:
   type: velocity_controllers/JointVelocityController
   joint: $(arg robot_name)/front_right_wheel_joint
-
-rear_left_velocity:
-  type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/rear_left_wheel_joint
-
-rear_right_velocity:
-  type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/rear_right_wheel_joint

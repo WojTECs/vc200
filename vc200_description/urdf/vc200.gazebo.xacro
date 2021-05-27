@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+
+<!-- <robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
+<robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find vc200_description)/urdf/parameters.xacro" />
+  <xacro:include filename="$(find vc200_description)/urdf/macros/macros.xacro" />
+
+
+  <link name="${robot_name}/base_footprint" />
+
+
+  <xacro:chassis name="${robot_name}/base" 
+    length="${chassis_length}" 
+    width="${chassis_width}" 
+    height="${chassis_height}" 
+    clearence="${clearence}" 
+    mass="${chassis_mass}" />
+
+  <xacro:caster_wheel name="${robot_name}/caster_right" 
+    radius="0.0125" 
+    mass="0.01" 
+    dx="-0.15" 
+    dy="-0.05" 
+    offset="0.014" 
+    height="0.035" 
+    width="0.007" />
+
+  <xacro:caster_wheel name="${robot_name}/caster_left" 
+    radius="0.0125" 
+    mass="0.01" 
+    dx="-0.15" 
+    dy="0.05" 
+    offset="0.014" 
+    height="0.035" 
+    width="0.007" />
+
+  <xacro:wheel name="${robot_name}/left_wheel" 
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    mass="${wheel_mass}" 
+    dx="${wheelbase/2.0}" 
+    dy="${wheel_separation/2.0}" />
+
+  <xacro:wheel name="${robot_name}/right_wheel" 
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    mass="${wheel_mass}" 
+    dx="${wheelbase/2.0}" 
+    dy="-${wheel_separation/2.0}" />
+
+  <xacro:macro name="wheel_friction" params="friction">
+    <mu1 value="${friction}" />
+    <mu2 value="${friction}" />
+    <minDepth>0.005</minDepth>
+  </xacro:macro>
+
+  <gazebo reference="${robot_name}/left_wheel_link">
+    <xacro:wheel_friction friction="1e+10" />
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="${robot_name}/right_wheel_link">
+    <xacro:wheel_friction friction="1e+10" />
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="${robot_name}/caster_right_wheel_link">
+    <xacro:wheel_friction friction="1e+10" />
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="${robot_name}/caster_left_wheel_link">
+    <xacro:wheel_friction friction="1e+10" />
+    <material>Gazebo/Orange</material>
+  </gazebo>
+
+  <gazebo reference="${robot_name}/base_link">
+    <xacro:wheel_friction friction="1e+10" />
+    <material>Gazebo/Orange</material>
+    <minDepth>0.003</minDepth>
+    <maxVel>0</maxVel>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50</updateRate>
+      <leftJoint>${robot_name}/left_wheel_joint</leftJoint>
+      <rightJoint>${robot_name}/right_wheel_joint</rightJoint>
+      <wheelSeparation>${wheel_separation}</wheelSeparation>
+      <wheelDiameter>${wheel_radius*2}</wheelDiameter>
+      <torque>20</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>${robot_name}/odom</odometryFrame>
+      <robotBaseFrame>${robot_name}/base_footprint</robotBaseFrame>
+    </plugin>
+  </gazebo>
+  <!-- <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      
+    </plugin>
+  </gazebo> -->
+
+
+</robot>

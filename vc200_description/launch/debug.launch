@@ -1,6 +1,7 @@
 <launch>
     
-    <arg name="model" default="$(find vc200_description)/urdf/vc200_description.xacro"/>
+    <!-- <arg name="model" default="$(find vc200_description)/urdf/vc200_description.xacro"/> -->
+    <arg name="model" default="$(find vc200_description)/urdf/vc200.gazebo.xacro"/>
     <arg name="gui" default="true" />
     <arg name="rvizconfig" default="$(find vc200_description)/rviz.rviz" />
 
