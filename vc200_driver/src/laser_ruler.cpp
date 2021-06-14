@@ -8,7 +8,15 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
   scans.resize(0);
   priv_nh_ = ros::NodeHandle(nh_, "laser_ruler");
 
-  numberOfSensors = 4;
+  for (size_t i = 0; i < numberOfSensors; i++) {
+    if(i<4){
+      headers[i] = "Front";
+    }else{
+      headers[i] = "Side";
+    }
+  }
+
+  numberOfSensors = 8;
   if (!priv_nh_.getParam("number_of_sensors", numberOfSensors)) {
     ROS_WARN_STREAM("[Laser ruler]: Can not find number of sensors, default: " << numberOfSensors);
   }
@@ -34,14 +42,17 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
     ROS_WARN_STREAM("[Laser ruler]: Can not find distance incremet, default: " << distanceIncremet);
   }
 
-  distPublisher = priv_nh_.advertise<sensor_msgs::LaserEcho>("scan", 1, true);
+  distPublisher = priv_nh_.advertise<sensor_msgs::Range>("scan", 1, true);
   future_task_ = std::async([]() {});
 }
 
 void LaserRuler::publish() {
   if ((future_task_.valid()) && (scans.size() > 0)) {
     future_task_ = std::async([this]() {
-      msg.echoes = this->scans;
+      msg.range = this->scans;
+      msg.ULTRASOUND = 1;
+      msg.INFRARED = 0;
+      msg.header.frameId = this->headers;
       this->distPublisher.publish(msg);
     });
   }
