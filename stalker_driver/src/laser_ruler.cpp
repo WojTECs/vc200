@@ -28,7 +28,7 @@ void LaserRulerFrame::doTheProcessing() {
 }
 
 void handleSavingData(LaserRulerDataset &data, uint8_t* iDataStream) {
-  if (iDataStream == 255) {
+  if (iDataStream[0] == 255) {
     data = std::numeric_limits<float>::infinity();
   } else {
     data = iDataStream[0] / 1000.0;
