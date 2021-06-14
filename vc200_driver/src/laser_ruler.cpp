@@ -10,10 +10,12 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
 
   for (size_t i = 0; i < numberOfSensors; i++) {
     if(i<4){
-      headers[i] = "Front";
+      msg[i].header.frameId = "Front";
     }else{
-      headers[i] = "Side";
+      msg[i].header.frameId = "Side";
     }
+  
+    msg[i].radiationType = msg[i].INFRARED
   }
 
   numberOfSensors = 8;
@@ -49,11 +51,12 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
 void LaserRuler::publish() {
   if ((future_task_.valid()) && (scans.size() > 0)) {
     future_task_ = std::async([this]() {
-      msg.range = this->scans;
-      msg.ULTRASOUND = 1;
-      msg.INFRARED = 0;
-      msg.header.frameId = this->headers;
-      this->distPublisher.publish(msg);
+      for (size_t i = 0; i < numberOfSensors; i++) {
+        msg[i].range = this->scans[i];
+        this->distPublisher.publish(msg[i]);
+      }
+
+      this->distPublisher.publish(msg[i]);
     });
   }
 }

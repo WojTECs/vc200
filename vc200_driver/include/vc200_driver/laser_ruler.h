@@ -31,7 +31,7 @@ class LaserRuler {
   int distanceIncremet;
   std::vector<float> scans;
   std::vector<string> headers;
-  sensor_msgs::Range msg;
+  sensor_msgs::Range[] msg;
 
   ros::Publisher distPublisher;
   std::future<void> future_task_;
