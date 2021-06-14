@@ -9,13 +9,33 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
   priv_nh_ = ros::NodeHandle(nh_, "laser_ruler");
 
   for (size_t i = 0; i < numberOfSensors; i++) {
-    if(i<4){
-      msg[i].header.frameId = "Front";
-    }else{
-      msg[i].header.frameId = "Side";
-    }
-  
-    msg[i].radiationType = msg[i].INFRARED
+    switch(i) {
+  case 0
+      msg[i].header.frameId = "FrontFirst";
+      break;
+  case 1
+      msg[i].header.frameId = "FrontSecond";
+      break;
+  case 2
+      msg[i].header.frameId = "FrontThird";
+      break;
+  case 3
+      msg[i].header.frameId = "FrontFourth";
+      break;
+    case 4
+      msg[i].header.frameId = "SideFirst";
+      break;
+    case 5
+      msg[i].header.frameId = "SideSecond";
+      break;
+    case 6
+      msg[i].header.frameId = "SideThird";
+      break;
+    default:
+      msg[i].header.frameId = "SideFourth";
+
+}
+    msg[i].radiationType = msg[i].INFRARED;
   }
 
   numberOfSensors = 8;
@@ -43,8 +63,9 @@ LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
   if (!priv_nh_.getParam("distance_incremet", distanceIncremet)) {
     ROS_WARN_STREAM("[Laser ruler]: Can not find distance incremet, default: " << distanceIncremet);
   }
-
-  distPublisher = priv_nh_.advertise<sensor_msgs::Range>("scan", 1, true);
+  for (size_t i = 0; i < numberOfSensors; i++) {
+  distPublisher[i] = priv_nh_.advertise<sensor_msgs::Range>("scan", 1, true);
+}
   future_task_ = std::async([]() {});
 }
 
@@ -53,10 +74,8 @@ void LaserRuler::publish() {
     future_task_ = std::async([this]() {
       for (size_t i = 0; i < numberOfSensors; i++) {
         msg[i].range = this->scans[i];
-        this->distPublisher.publish(msg[i]);
+        this->distPublisher[i].publish(msg[i]);
       }
-
-      this->distPublisher.publish(msg[i]);
     });
   }
 }
