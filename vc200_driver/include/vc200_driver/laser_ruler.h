@@ -1,6 +1,5 @@
 #pragma once
 #include <ros/ros.h>
-#include <sensor_msgs/LaserEcho.h>
 #include <sensor_msgs/Range.h>
 #include <std_msgs/Header.h>
 
