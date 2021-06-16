@@ -24,7 +24,6 @@ namespace vc200_driver
   {
   public:
     MotorController(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh);
-
     std::shared_ptr<Interface::DownstreamData::MovementOrderLeftRightFrame> motorDownstream;
     std::shared_ptr<Interface::UpstreamData::MovementInformationLeftRightFrame> motorUpstream;
     std::shared_ptr<Interface::UpstreamData::EncoderFrame> encUpstream;

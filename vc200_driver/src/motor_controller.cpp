@@ -11,6 +11,7 @@ namespace vc200_driver
   {
     stClient_->addExpectedDataType(motorUpstream);
     stClient_->addExpectedDataType(encUpstream);
+    stClient_->addExpectedDataType(currentUpstream);
 
     priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
 
@@ -108,6 +109,7 @@ namespace vc200_driver
     rightJointState.velocity = encData.rightSideVelocity.value;
     rightJointState.position = (encData.rightSideDistance.int_value / (float)encoder_resolution) * 2.0 * M_PI;
   }
+
   void MotorController::writeData()
   {
     Interface::DownstreamData::MovementCommandDataset cmd;

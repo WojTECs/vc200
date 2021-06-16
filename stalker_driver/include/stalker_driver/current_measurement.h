@@ -17,7 +17,7 @@ namespace Interface
     {
       double channel_A;
       double channel_B;
-    }
+    };
 
     class CurrentMeasurementFrame : public UpstreamDataType
     {
@@ -30,7 +30,7 @@ namespace Interface
     public:
       CurrentMeasurementFrame();
       virtual ~CurrentMeasurementFrame();
-      void readData(CurrentMeasurementDataset &dest);
+      void readData(CurrentMeasurementDataset& dest);
       void deserialize(const uint8_t *iDataStream, const int iDataSize) override;
     };
   } // namespace UpstreamData
