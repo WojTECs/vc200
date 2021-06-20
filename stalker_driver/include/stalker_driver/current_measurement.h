@@ -2,6 +2,7 @@
 
 #include "stalker_driver/DownstreamDataType.h"
 #include "stalker_driver/UpstreamDataType.h"
+#include <cmath>
 
 namespace Interface
 {
@@ -29,8 +30,11 @@ namespace Interface
       CurrentMeasurementDataset linearCoefA;
       CurrentMeasurementDataset linearCoefB;
       CurrentIncomingDataset noiseEpsilon;
+      const uint8_t ADC_RESOLUTION = 12;
+      const uint16_t MAX_SIZE = pow(2, ADC_RESOLUTION);;
       // void filter();
       void doTheProcessing() override;
+  
 
     public:
       CurrentMeasurementFrame();

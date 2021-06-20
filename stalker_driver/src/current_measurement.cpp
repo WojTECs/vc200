@@ -45,6 +45,18 @@ namespace Interface
         incomingDatasets[i].channel_A = uint16_t((iDataStream[1 + byteShift] << 8) | (iDataStream[0 + byteShift] & 0xFF));
         incomingDatasets[i].channel_B = uint16_t((iDataStream[3 + byteShift] << 8) | (iDataStream[2 + byteShift] & 0xFF));
 
+        if (incomingDatasets[i].channel_A > MAX_SIZE)
+        {
+          std::cout << "Bad current measurement frame received. Data for channel A is greater than ADC resolution" << std::endl;
+          return;
+        }
+
+        if (incomingDatasets[i].channel_B > MAX_SIZE)
+        {
+          std::cout << "Bad current measurement frame received. Data for channel B is greater than ADC resolution" << std::endl;
+          return;
+        }
+
         // if (incomingDatasets[i].channel_A  > 1360 || incomingDatasets[i].channel_A  < 1100 ||
         //     incomingDatasets[i].channel_B  > 1360 || incomingDatasets[i].channel_B  < 1100 ) 
         // {
