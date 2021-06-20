@@ -8,6 +8,11 @@ namespace Interface
     {
       protocolIndentificator = uint8_t{0x13};
       datasetBinarySize = 0x4;
+
+      noiseEpsilon = {10, 10};
+      linearCoefA = {0.1, 0.1};
+      linearCoefB = {40.0, 40.0};
+
     }
 
     void CurrentMeasurementFrame::readData(CurrentMeasurementDataset& dest)
@@ -28,24 +33,22 @@ namespace Interface
 
       int dataCount = iDataSize / datasetBinarySize;
       std::lock_guard<std::mutex> lock(dataMutex);
-      datasets = std::vector<CurrentIncomingDataset>(dataCount);
+      incomingDatasets = std::vector<CurrentIncomingDataset>(dataCount);
+      processedDatasets = std::vector<CurrentMeasurementDataset>(incomingDatasets.size());
 
       int byteShift = 0;
 
-    // std::cout << "cmd.rightSidePWM: " << cmd.rightSidePWM << std::endl;
-    // std::cout << "leftVelocityCommand: " << leftVelocityCommand << std::endl;
-    // std::cout << "rightVelocityCommand: " << rightVelocityCommand << std::endl;
       //std::cout << "\x1B[2J\x1B[H";
       for (int i = 0; i < dataCount; i++)
       {
         byteShift = i * datasetBinarySize;
-        datasets[i].channel_A = uint16_t((iDataStream[1 + byteShift] << 8) | (iDataStream[0 + byteShift] & 0xFF)) & 0xFFFF;
-        datasets[i].channel_B = uint16_t((iDataStream[3 + byteShift] << 8) | (iDataStream[2 + byteShift] & 0xFF)) & 0xFFFF;
+        incomingDatasets[i].channel_A = uint16_t((iDataStream[1 + byteShift] << 8) | (iDataStream[0 + byteShift] & 0xFF));
+        incomingDatasets[i].channel_B = uint16_t((iDataStream[3 + byteShift] << 8) | (iDataStream[2 + byteShift] & 0xFF));
 
-        // if (datasets[i].channel_A  > 1360 || datasets[i].channel_A  < 1100 ||
-        //     datasets[i].channel_B  > 1360 || datasets[i].channel_B  < 1100 ) 
+        // if (incomingDatasets[i].channel_A  > 1360 || incomingDatasets[i].channel_A  < 1100 ||
+        //     incomingDatasets[i].channel_B  > 1360 || incomingDatasets[i].channel_B  < 1100 ) 
         // {
-        //   std::cout << i << "\tCurrent\tA:\t" << datasets[i].channel_A << "\t\tB:\t" << datasets[i].channel_B << std::endl;
+        //   std::cout << i << "\tCurrent\tA:\t" << incomingDatasets[i].channel_A << "\t\tB:\t" << incomingDatasets[i].channel_B << std::endl;
         // }
       }
       
@@ -58,22 +61,23 @@ namespace Interface
 
     void CurrentMeasurementFrame::doTheProcessing()
     {
-      int32_t tmp_channel_A = 0;
-      int32_t tmp_channel_B = 0;
-
+      dataAvg = {0.0, 0.0};
     
       //std::cout << "---------------------------------------------------------------------------------------" << std::endl;
 
-      for (int i = 0; i < datasets.size(); i++)
+      for (int i = 0; i < incomingDatasets.size(); i++)
       {
-        tmp_channel_A += datasets[i].channel_A;
-        tmp_channel_B += datasets[i].channel_B;
+        processedDatasets[i].channel_A = linearCoefA.channel_A * incomingDatasets[i].channel_A + linearCoefB.channel_A;
+        processedDatasets[i].channel_B = linearCoefA.channel_B * incomingDatasets[i].channel_B + linearCoefB.channel_B;
 
-        //std::cout << i << "\tCurrent\tA:\t" << datasets[i].channel_A << "\t\tB:\t" << datasets[i].channel_B << std::endl;
+        dataAvg.channel_A += processedDatasets[i].channel_A;
+        dataAvg.channel_B += processedDatasets[i].channel_B;
+
+        //std::cout << i << "\Processed current\tA:\t" << processedDatasets[i].channel_A << "\t\tB:\t" << processedDatasets[i].channel_B << std::endl;
       }
 
-      dataAvg.channel_A = ((double)tmp_channel_A) / datasets.size();
-      dataAvg.channel_B = ((double)tmp_channel_B) / datasets.size();
+      dataAvg.channel_A = ((double)dataAvg.channel_A) / incomingDatasets.size();
+      dataAvg.channel_B = ((double)dataAvg.channel_B) / incomingDatasets.size();
     }
 
   } // namespace UpstreamData

@@ -23,7 +23,12 @@ namespace Interface
     {
     private:
       CurrentMeasurementDataset dataAvg;
-      std::vector<CurrentIncomingDataset> datasets;
+      std::vector<CurrentIncomingDataset> incomingDatasets;
+      std::vector<CurrentMeasurementDataset> processedDatasets;
+      // Current is converted with linear function y=ax+b; 
+      CurrentMeasurementDataset linearCoefA;
+      CurrentMeasurementDataset linearCoefB;
+      CurrentIncomingDataset noiseEpsilon;
       // void filter();
       void doTheProcessing() override;
 
