@@ -16,28 +16,31 @@ namespace vc200_driver
       switch (i)
       {
       case 0:
-        msg[i].header.frame_id = "FrontFirst";
+        this->msg[i].header.frame_id = "FrontFirst";
         break;
       case 1:
-        msg[i].header.frame_id = "FrontSecond";
+        this->msg[i].header.frame_id = "FrontSecond";
         break;
       case 2:
-        msg[i].header.frame_id = "FrontThird";
+        this->msg[i].header.frame_id = "FrontThird";
         break;
       case 3:
-        msg[i].header.frame_id = "FrontFourth";
+        this->msg[i].header.frame_id = "FrontFourth";
         break;
       case 4:
-        msg[i].header.frame_id = "SideFirst";
+        this->msg[i].header.frame_id = "SideFirst";
         break;
       case 5:
-        msg[i].header.frame_id = "SideSecond";
+        this->msg[i].header.frame_id = "SideSecond";
         break;
       case 6:
-        msg[i].header.frame_id = "SideThird";
+        this->msg[i].header.frame_id = "SideThird";
+        break;
+      case 7:
+        this->msg[i].header.frame_id = "SideFourth";
         break;
       default:
-        msg[i].header.frame_id = "SideFourth";
+        ROS_WARN_STREAM("[Laser ruler]: Index overflow in defining frame_ids");
       }
       msg[i].radiation_type = msg[i].INFRARED;
     }
@@ -46,6 +49,7 @@ namespace vc200_driver
     {
       ROS_WARN_STREAM("[Laser ruler]: Can not find number of sensors, default: " << numberOfSensors);
     }
+    numberOfSensors = 8;
     scans.resize(numberOfSensors);
 
     maxDistance = 0;
@@ -87,6 +91,7 @@ namespace vc200_driver
                                   for (size_t i = 0; i < numberOfSensors; i++)
                                   {
                                     this->msg[i].range = this->scans[i];
+                                    this->msg[i].header.stamp = ros::Time::now();
                                     this->distPublisher[i].publish(msg[i]);
                                   }
                                 });
