@@ -10,8 +10,8 @@ namespace Interface
       datasetBinarySize = 0x4;
 
       noiseEpsilon = {10, 10};
-      linearCoefA = {0.1, 0.1};
-      linearCoefB = {40.0, 40.0};
+      linearCoefA = {0.004031858, 0.003989492};
+      linearCoefB = {-011.514836066,	-011.381415061};
 
     }
 
@@ -74,6 +74,8 @@ namespace Interface
     void CurrentMeasurementFrame::doTheProcessing()
     {
       dataAvg = {0.0, 0.0};
+      uint32_t tmpA = 0;
+      uint32_t tmpB = 0;
     
       //std::cout << "---------------------------------------------------------------------------------------" << std::endl;
 
@@ -82,14 +84,22 @@ namespace Interface
         processedDatasets[i].channel_A = linearCoefA.channel_A * incomingDatasets[i].channel_A + linearCoefB.channel_A;
         processedDatasets[i].channel_B = linearCoefA.channel_B * incomingDatasets[i].channel_B + linearCoefB.channel_B;
 
-        dataAvg.channel_A += processedDatasets[i].channel_A;
-        dataAvg.channel_B += processedDatasets[i].channel_B;
+        tmpA += incomingDatasets[i].channel_A;
+        tmpB += incomingDatasets[i].channel_B;
+
+        dataAvg.channel_A += (double)processedDatasets[i].channel_A;
+        dataAvg.channel_B += (double)processedDatasets[i].channel_B;
 
         //std::cout << i << "\Processed current\tA:\t" << processedDatasets[i].channel_A << "\t\tB:\t" << processedDatasets[i].channel_B << std::endl;
       }
 
+      tmpA = (uint32_t)((double)tmpA / incomingDatasets.size());
+      tmpB = (uint32_t)((double)tmpB / incomingDatasets.size());
+
       dataAvg.channel_A = ((double)dataAvg.channel_A) / incomingDatasets.size();
       dataAvg.channel_B = ((double)dataAvg.channel_B) / incomingDatasets.size();
+      std::cout << "AVG current\tA: " << dataAvg.channel_A << "\tADC: " << tmpA << " (" << tmpA*(3.3/4096) << "V)" <<
+             "\tB: " << dataAvg.channel_B << "\tADC: " << tmpB << " (" << tmpB*(3.3/4096) << "V)" << std::endl;
     }
 
   } // namespace UpstreamData
