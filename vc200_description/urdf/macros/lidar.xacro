@@ -1,22 +1,31 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:macro name="lidar" params="name radius length dx dy dz ar ap ay">
+    <xacro:macro name="lidar" params="name radius height *origin mass">
 
         <link name="${name}_link">
             <visual>
                 <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
                 <geometry>
-                    <cylinder radius="${radius}" length="${length}" />
+                    <cylinder radius="${radius}" length="${height}" />
                 </geometry>
                 <material name="lidar" />
             </visual>
+            <collision name="${name}">
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+                <geometry>
+                    <cylinder radius="${radius}" length="${height}" />
+                </geometry>
+            </collision>
+            <xacro:cylinder_inertia radius="${radius}" length="${height}" mass="${mass}">
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            </xacro:cylinder_inertia>
         </link>
 
         <joint name="${name}_joint" type="fixed">
             <parent link="${robot_name}/base_footprint" />
             <child link="${name}_link" />
-            <origin xyz="${dx} ${dy} ${dz}" rpy="${ar} ${ap} ${ay}" />
+            <xacro:insert_block name="origin" />
         </joint>
 
     </xacro:macro>

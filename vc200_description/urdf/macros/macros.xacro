@@ -11,4 +11,7 @@
     <xacro:include filename="$(find vc200_description)/urdf/macros/caster_wheel.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/inertia.xacro" />
 
+    <!-- gazebo -->
+    <xacro:include filename="$(find vc200_description)/urdf/gazebo/lidar_sensor.xacro" />
+
 </robot>

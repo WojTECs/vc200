@@ -7,9 +7,7 @@
   <xacro:include filename="$(find vc200_description)/urdf/parameters.xacro" />
   <xacro:include filename="$(find vc200_description)/urdf/macros/macros.xacro" />
 
-
   <link name="${robot_name}/base_footprint" />
-
 
   <xacro:chassis name="${robot_name}/base" 
     length="${chassis_length}" 
@@ -49,6 +47,13 @@
     mass="${wheel_mass}" 
     dx="${wheelbase/2.0}" 
     dy="-${wheel_separation/2.0}" />
+
+  <xacro:lidar name="${robot_name}/rplidar"
+    radius="0.035" 
+    height="0.03"
+    mass="0.17" >
+    <origin xyz="0.1 0.0 ${0.015+chassis_height+clearence}" rpy="0.0 0.0 0.0"/>
+  </xacro:lidar>
 
   <xacro:macro name="wheel_friction" params="friction">
     <mu1 value="${friction}" />
@@ -99,6 +104,17 @@
       <robotBaseFrame>${robot_name}/base_footprint</robotBaseFrame>
     </plugin>
   </gazebo>
+
+  <xacro:lidar_sensor 
+  reference="${robot_name}/rplidar_link" 
+  name="rplidar" 
+  frame_id="${robot_name}/rplidar_link" 
+  update_rate="40" 
+  samples="720" 
+  visualize="true" 
+  type_prefix="gpu_" />
+
+  
   <!-- <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       

@@ -16,6 +16,9 @@
             <uri>model://sun</uri>
         </include>
 
+        <include>
+            <uri>model://house</uri>
+        </include>
         <!-- Focus camera on tall pendulum -->
         <!-- <gui fullscreen='0'>
             <camera name='user_camera'>
