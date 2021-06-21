@@ -4,7 +4,7 @@ namespace Interface {
 namespace UpstreamData {
 LaserRulerFrame::LaserRulerFrame() {
   protocolIndentificator = uint8_t{0x12};
-  datasetBinarySize = 0x4;
+  datasetBinarySize = 0x8;
 }
 void LaserRulerFrame::readData(LaserRulerDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
@@ -27,11 +27,11 @@ void LaserRulerFrame::deserialize(const uint8_t* iDataStream, const int iDataSiz
 void LaserRulerFrame::doTheProcessing() {
 }
 
-void handleSavingData(LaserRulerDataset &data, uint8_t* iDataStream) {
-  if (iDataStream[0] == 255) {
+void LaserRulerFrame::handleSavingData(float &data, uint8_t iDataStream) {
+  if (iDataStream == 255) {
     data = std::numeric_limits<float>::infinity();
   } else {
-    data = iDataStream[0] / 1000.0;
+    data = (float)iDataStream / 1000.0;
   }
 }
 

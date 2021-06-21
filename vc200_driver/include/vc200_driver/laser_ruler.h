@@ -29,10 +29,9 @@ class LaserRuler {
   int rulerLenght;
   int distanceIncremet;
   std::vector<float> scans;
-  std::vector<string> headers;
-  sensor_msgs::Range[8] msg;
+  sensor_msgs::Range msg[8];
 
-  ros::Publisher[8] distPublisher;
+  ros::Publisher distPublisher[8];
   std::future<void> future_task_;
 };
 }  // namespace vc200_driver
