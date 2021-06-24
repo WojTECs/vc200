@@ -95,7 +95,9 @@ namespace vc200_driver
     Interface::UpstreamData::CurrentMeasurementDataset currentData;
     motorUpstream->readData(motorData);
     encUpstream->readData(encData);
-    currentUpstream->readData(currentData);
+
+    currentUpstream->readData(currentData, leftJointState.velocity, rightJointState.velocity,
+                              leftJointState.position, rightJointState.position);
     leftChannelPid_.setPoint(leftVelocityCommand);
     rightChannelPid_.setPoint(rightVelocityCommand);
     leftChannelPid_.update(encData.leftSideVelocity.value);
@@ -140,7 +142,6 @@ namespace vc200_driver
     {
       cmd.rightDirection = 0;
     }
-
     cmd.shallQueue = 0;
     cmd.timeToDrive = 500;
 

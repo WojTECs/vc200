@@ -9,14 +9,57 @@ namespace Interface
       protocolIndentificator = uint8_t{0x13};
       datasetBinarySize = 0x4;
 
-      noiseEpsilon = {20, 20};
+      noiseEpsilon = {5, 5};
       linearCoefA = {000.004107459, 000.004107459};
       linearCoefB = {-012.482455249, -012.412628453};
+      zeroOffset = {0, 0};
+
+      zeroPosition = {(uint16_t)(-linearCoefB.channel_A / (double)linearCoefA.channel_A),
+                      (uint16_t)(-linearCoefB.channel_B / (double)linearCoefA.channel_B)};
+
+      zeroOffsetCalibration = std::queue<CurrentIncomingDataset>();
     }
 
-    void CurrentMeasurementFrame::readData(CurrentMeasurementDataset &dest)
+    void CurrentMeasurementFrame::readData(CurrentMeasurementDataset &dest, double velocityA, double velocityB, double positionA, double positionB)
     {
       std::lock_guard<std::mutex> lock(dataMutex);
+
+      if (velocityA == 0.0 && positionA == lastPositionA &&
+          velocityB == 0.0 && positionB == lastPositionB)
+      {
+
+        zeroOffsetCalibration.push(ADCAvg);
+
+        if (zeroOffsetCalibration.size() > CALIBRATION_QUEUE_LEN - 1)
+        {
+          for (size_t i = 0; i < CALIBRATION_QUEUE_LEN; i++)
+          {
+            zeroOffset.channel_A += zeroOffsetCalibration.front().channel_A - zeroPosition.channel_A;
+            zeroOffset.channel_B += zeroOffsetCalibration.front().channel_B - zeroPosition.channel_B;
+            // std::cout << i << " Zero offset\tA: " << zeroOffset.channel_A << "\tB: " << zeroOffset.channel_B  << std::endl;
+
+            zeroOffsetCalibration.pop();
+          }
+
+          zeroOffset.channel_A = (uint16_t)((double)zeroOffset.channel_A / (double)CALIBRATION_QUEUE_LEN);
+          zeroOffset.channel_B = (uint16_t)((double)zeroOffset.channel_B / (double)CALIBRATION_QUEUE_LEN);
+
+          zeroPosition.channel_A += zeroOffset.channel_A;
+          zeroPosition.channel_B += zeroOffset.channel_B;
+          // std::cout << "Current measurement zero offset calibration: A: " << zeroOffset.channel_A << " B: " << zeroOffset.channel_B << std::endl;
+
+          zeroPosition.channel_A += zeroOffset.channel_A;
+          zeroPosition.channel_B += zeroOffset.channel_B;
+        }
+      }
+      else
+      {
+        zeroOffsetCalibration = std::queue<CurrentIncomingDataset>();
+      }
+
+      lastPositionA = positionA;
+      lastPositionB = positionB;
+
       dest = dataAvg;
     }
 
@@ -74,8 +117,6 @@ namespace Interface
       dataAvg = {0.0, 0.0};
       uint32_t tmpA = 0;
       uint32_t tmpB = 0;
-      CurrentIncomingDataset zeroPosition = {(uint16_t)(-linearCoefB.channel_A / (double)linearCoefA.channel_A),
-                                             (uint16_t)(-linearCoefB.channel_B / (double)linearCoefA.channel_B)};
 
       //std::cout << "---------------------------------------------------------------------------------------" << std::endl;
 
@@ -85,24 +126,19 @@ namespace Interface
         tmpA += incomingDatasets[i].channel_A;
         tmpB += incomingDatasets[i].channel_B;
 
+        processedDatasets[i].channel_A = linearCoefA.channel_A * incomingDatasets[i].channel_A + linearCoefB.channel_A;
+        processedDatasets[i].channel_B = linearCoefA.channel_B * incomingDatasets[i].channel_B + linearCoefB.channel_B;
+        
         if ((incomingDatasets[i].channel_A < zeroPosition.channel_A + noiseEpsilon.channel_A) &&
             (incomingDatasets[i].channel_A > zeroPosition.channel_A - noiseEpsilon.channel_A))
         {
           processedDatasets[i].channel_A = 0.0;
-        }
-        else
-        {
-          processedDatasets[i].channel_A = linearCoefA.channel_A * incomingDatasets[i].channel_A + linearCoefB.channel_A;
         }
 
         if ((incomingDatasets[i].channel_B < zeroPosition.channel_B + noiseEpsilon.channel_B) &&
             (incomingDatasets[i].channel_B > zeroPosition.channel_B - noiseEpsilon.channel_B))
         {
           processedDatasets[i].channel_B = 0.0;
-        }
-        else
-        {
-          processedDatasets[i].channel_B = linearCoefA.channel_B * incomingDatasets[i].channel_B + linearCoefB.channel_B;
         }
 
         dataAvg.channel_A += (double)processedDatasets[i].channel_A;
@@ -111,17 +147,30 @@ namespace Interface
         //std::cout << i << "\Processed current\tA:\t" << processedDatasets[i].channel_A << "\t\tB:\t" << processedDatasets[i].channel_B << std::endl;
       }
 
-      tmpA = (uint32_t)((double)tmpA / incomingDatasets.size());
-      tmpB = (uint32_t)((double)tmpB / incomingDatasets.size());
+      ADCAvg.channel_A = (uint16_t)((double)tmpA / incomingDatasets.size());
+      ADCAvg.channel_B = (uint16_t)((double)tmpB / incomingDatasets.size());
 
       dataAvg.channel_A = ((double)dataAvg.channel_A) / incomingDatasets.size();
       dataAvg.channel_B = ((double)dataAvg.channel_B) / incomingDatasets.size();
-      std::cout << "AVG current\tA: " << dataAvg.channel_A << "\tADC: " << tmpA << " (" << tmpA * (3.3 / 4096) << "V)"
-                << "\tB: " << dataAvg.channel_B << "\tADC: " << tmpB << " (" << tmpB * (3.3 / 4096) << "V)" << std::endl;
+
+      if ((dataAvg.channel_A < linearCoefA.channel_A * (zeroPosition.channel_A + noiseEpsilon.channel_A) + linearCoefB.channel_A) &&
+         (dataAvg.channel_A > linearCoefA.channel_A * (zeroPosition.channel_A - noiseEpsilon.channel_A) + linearCoefB.channel_A))
+      {
+        dataAvg.channel_A = 0.0;
+      }
+
+      if ((dataAvg.channel_B < linearCoefA.channel_B * (zeroPosition.channel_B + noiseEpsilon.channel_B) + linearCoefB.channel_B) &&
+         (dataAvg.channel_B > linearCoefA.channel_B * (zeroPosition.channel_B - noiseEpsilon.channel_B) + linearCoefB.channel_B))
+      {
+        dataAvg.channel_B = 0.0;
+      }
+
+
+      std::cout << "AVG current\tA: " << dataAvg.channel_A << "\tADC: " << ADCAvg.channel_A << " (" << ADCAvg.channel_A * (3.3 / 4096) << "V)"
+                << "\tB: " << dataAvg.channel_B << "\tADC: " << ADCAvg.channel_B << " (" << ADCAvg.channel_B * (3.3 / 4096) << "V)" << std::endl;
 
       // std::cout << "Zero current\tA: " << zeroPosition.channel_A << "\tnoiseEps: " << noiseEpsilon.channel_A
       //           << "\tB: " << zeroPosition.channel_B << "\tnoiseEps: " << noiseEpsilon.channel_B << std::endl;
     }
-
   } // namespace UpstreamData
 } // namespace Interface
