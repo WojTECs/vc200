@@ -84,6 +84,7 @@ namespace Interface
       for (int i = 0; i < dataCount; i++)
       {
         byteShift = i * datasetBinarySize;
+
         incomingDatasets[i].channel_A = uint16_t((iDataStream[1 + byteShift] << 8) | (iDataStream[0 + byteShift] & 0xFF));
         incomingDatasets[i].channel_B = uint16_t((iDataStream[3 + byteShift] << 8) | (iDataStream[2 + byteShift] & 0xFF));
 
@@ -98,18 +99,10 @@ namespace Interface
           std::cout << "Bad current measurement frame received. Data for channel B is greater than ADC resolution" << std::endl;
           return;
         }
-
-        // if (incomingDatasets[i].channel_A  > 1360 || incomingDatasets[i].channel_A  < 1100 ||
-        //     incomingDatasets[i].channel_B  > 1360 || incomingDatasets[i].channel_B  < 1100 )
-        // {
-        //   std::cout << i << "\tCurrent\tA:\t" << incomingDatasets[i].channel_A << "\t\tB:\t" << incomingDatasets[i].channel_B << std::endl;
-        // }
       }
 
       doTheProcessing();
 
-      //std::cout << "\x1B[2J\x1B[H";
-      //std::cout << "Current CH_A: " << dataAvg.channel_A << " \t CH_B: " << dataAvg.channel_B << std::endl;
     }
 
     void CurrentMeasurementFrame::doTheProcessing()
@@ -128,7 +121,7 @@ namespace Interface
 
         processedDatasets[i].channel_A = linearCoefA.channel_A * incomingDatasets[i].channel_A + linearCoefB.channel_A;
         processedDatasets[i].channel_B = linearCoefA.channel_B * incomingDatasets[i].channel_B + linearCoefB.channel_B;
-        
+
         if ((incomingDatasets[i].channel_A < zeroPosition.channel_A + noiseEpsilon.channel_A) &&
             (incomingDatasets[i].channel_A > zeroPosition.channel_A - noiseEpsilon.channel_A))
         {
@@ -154,20 +147,19 @@ namespace Interface
       dataAvg.channel_B = ((double)dataAvg.channel_B) / incomingDatasets.size();
 
       if ((dataAvg.channel_A < linearCoefA.channel_A * (zeroPosition.channel_A + noiseEpsilon.channel_A) + linearCoefB.channel_A) &&
-         (dataAvg.channel_A > linearCoefA.channel_A * (zeroPosition.channel_A - noiseEpsilon.channel_A) + linearCoefB.channel_A))
+          (dataAvg.channel_A > linearCoefA.channel_A * (zeroPosition.channel_A - noiseEpsilon.channel_A) + linearCoefB.channel_A))
       {
         dataAvg.channel_A = 0.0;
       }
 
       if ((dataAvg.channel_B < linearCoefA.channel_B * (zeroPosition.channel_B + noiseEpsilon.channel_B) + linearCoefB.channel_B) &&
-         (dataAvg.channel_B > linearCoefA.channel_B * (zeroPosition.channel_B - noiseEpsilon.channel_B) + linearCoefB.channel_B))
+          (dataAvg.channel_B > linearCoefA.channel_B * (zeroPosition.channel_B - noiseEpsilon.channel_B) + linearCoefB.channel_B))
       {
         dataAvg.channel_B = 0.0;
       }
 
-
-      std::cout << "AVG current\tA: " << dataAvg.channel_A << "\tADC: " << ADCAvg.channel_A << " (" << ADCAvg.channel_A * (3.3 / 4096) << "V)"
-                << "\tB: " << dataAvg.channel_B << "\tADC: " << ADCAvg.channel_B << " (" << ADCAvg.channel_B * (3.3 / 4096) << "V)" << std::endl;
+      // std::cout << "AVG current\tA: " << dataAvg.channel_A << "\tADC: " << ADCAvg.channel_A << " (" << ADCAvg.channel_A * (3.3 / 4096) << "V)"
+      //           << "\tB: " << dataAvg.channel_B << "\tADC: " << ADCAvg.channel_B << " (" << ADCAvg.channel_B * (3.3 / 4096) << "V)" << std::endl;
 
       // std::cout << "Zero current\tA: " << zeroPosition.channel_A << "\tnoiseEps: " << noiseEpsilon.channel_A
       //           << "\tB: " << zeroPosition.channel_B << "\tnoiseEps: " << noiseEpsilon.channel_B << std::endl;
