@@ -78,6 +78,19 @@ namespace vc200_driver
     hardware_interface::JointHandle rear_right_handle(state_rear_right_handle, &rightVelocityCommand);
     rearRightJointHandle = rear_right_handle;
 
+    time_t rawtime;
+    struct tm *timeinfo;
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
+    currentLogFile.open(currentFileName, std::ios::app);
+    if (currentLogFile.is_open()){
+      currentLogFile << "timestamp,channel_A,channel_B\n";
+      currentLogFile.close();
+      std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
+    }
+
+
     // command timeout
   }
 
@@ -96,9 +109,17 @@ namespace vc200_driver
     std::vector<Interface::UpstreamData::CurrentMeasurementDataset> currentVector;
     motorUpstream->readData(motorData);
     encUpstream->readData(encData);
-
     currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
                               leftJointState.position, rightJointState.position);
+
+    currentLogFile.open(currentFileName, std::ios::app);
+    currentLogFile << std::to_string(ros::Time::now().toNSec());
+    for (size_t i = 0; i < currentVector.size(); i++)
+    {                     // first element is empty for timestamp
+      currentLogFile << "," << std::to_string(currentVector[i].channel_A);
+      currentLogFile << "," << std::to_string(currentVector[i].channel_B) << "\n";
+    }
+    currentLogFile.close();
     leftChannelPid_.setPoint(leftVelocityCommand);
     rightChannelPid_.setPoint(rightVelocityCommand);
     leftChannelPid_.update(encData.leftSideVelocity.value);

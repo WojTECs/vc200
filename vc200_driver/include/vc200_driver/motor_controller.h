@@ -5,6 +5,8 @@
 #include <ros/ros.h>
 
 #include <string>
+#include <ctime>
+#include <fstream>
 
 #include "pid/pid.h"
 #include "stalker_driver/STInterfaceClientUDP.h"
@@ -40,6 +42,8 @@ namespace vc200_driver
 
   private:
     PID leftChannelPid_, rightChannelPid_;
+    char currentFileName[50];
+    std::ofstream currentLogFile;
 
     joint_state leftJointState;
     joint_state rightJointState;
