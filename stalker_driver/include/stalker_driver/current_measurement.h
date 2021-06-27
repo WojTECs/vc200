@@ -47,13 +47,14 @@ namespace Interface
       const uint8_t ADC_RESOLUTION = 12;
       const uint16_t MAX_SIZE = pow(2, ADC_RESOLUTION);
       const uint8_t CALIBRATION_QUEUE_LEN = 10;
-      
+
       void doTheProcessing() override;
 
     public:
       CurrentMeasurementFrame();
       virtual ~CurrentMeasurementFrame();
-      void readData(CurrentMeasurementDataset &dest, double velocityA, double velocityB, double positionA, double positionB);
+      void readData(CurrentMeasurementDataset &dest, std::vector<CurrentMeasurementDataset> &destVect,
+                    double velocityA, double velocityB, double positionA, double positionB);
       void deserialize(const uint8_t *iDataStream, const int iDataSize) override;
     };
   } // namespace UpstreamData

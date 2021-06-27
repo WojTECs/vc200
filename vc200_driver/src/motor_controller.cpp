@@ -93,10 +93,11 @@ namespace vc200_driver
     Interface::UpstreamData::MovementInformationDataset motorData;
     Interface::UpstreamData::EncoderDataset encData;
     Interface::UpstreamData::CurrentMeasurementDataset currentData;
+    std::vector<Interface::UpstreamData::CurrentMeasurementDataset> currentVector;
     motorUpstream->readData(motorData);
     encUpstream->readData(encData);
 
-    currentUpstream->readData(currentData, leftJointState.velocity, rightJointState.velocity,
+    currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
                               leftJointState.position, rightJointState.position);
     leftChannelPid_.setPoint(leftVelocityCommand);
     rightChannelPid_.setPoint(rightVelocityCommand);

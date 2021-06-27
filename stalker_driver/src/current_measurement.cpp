@@ -20,7 +20,8 @@ namespace Interface
       zeroOffsetCalibration = std::queue<CurrentIncomingDataset>();
     }
 
-    void CurrentMeasurementFrame::readData(CurrentMeasurementDataset &dest, double velocityA, double velocityB, double positionA, double positionB)
+    void CurrentMeasurementFrame::readData(CurrentMeasurementDataset &dest, std::vector<CurrentMeasurementDataset> &destVect,
+                                           double velocityA, double velocityB, double positionA, double positionB)
     {
       std::lock_guard<std::mutex> lock(dataMutex);
 
@@ -61,6 +62,7 @@ namespace Interface
       lastPositionB = positionB;
 
       dest = dataAvg;
+      destVect = processedDatasets;
     }
 
     CurrentMeasurementFrame::~CurrentMeasurementFrame() {}
@@ -102,7 +104,6 @@ namespace Interface
       }
 
       doTheProcessing();
-
     }
 
     void CurrentMeasurementFrame::doTheProcessing()
