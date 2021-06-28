@@ -11,6 +11,12 @@ namespace vc200_driver
     priv_nh_ = ros::NodeHandle(nh_, "laser_ruler");
 
     numberOfSensors = 8;
+    if (!priv_nh_.getParam("number_of_sensors", numberOfSensors))
+    {
+      ROS_WARN_STREAM("[Laser ruler]: Can not find number of sensors, default: " << numberOfSensors);
+    }
+    scans.resize(numberOfSensors);
+    
     for (size_t i = 0; i < numberOfSensors; i++)
     {
       switch (i)
@@ -42,15 +48,12 @@ namespace vc200_driver
       default:
         ROS_WARN_STREAM("[Laser ruler]: Index overflow in defining frame_ids");
       }
-      msg[i].radiation_type = msg[i].INFRARED;
+      this->msg[i].radiation_type = msg[i].INFRARED;
+      this->msg[i].field_of_view = 0;
+      this->msg[i].min_range = 0;
+      this->msg[i].max_range = 0.254;
     }
 
-    if (!priv_nh_.getParam("number_of_sensors", numberOfSensors))
-    {
-      ROS_WARN_STREAM("[Laser ruler]: Can not find number of sensors, default: " << numberOfSensors);
-    }
-    numberOfSensors = 8;
-    scans.resize(numberOfSensors);
 
     maxDistance = 0;
     if (!priv_nh_.getParam("max_distance", maxDistance))
