@@ -1,6 +1,7 @@
 #pragma once
 #include <ros/ros.h>
-#include <sensor_msgs/LaserEcho.h>
+#include <sensor_msgs/Range.h>
+#include <std_msgs/Header.h>
 
 #include <future>
 #include <memory>
@@ -28,9 +29,9 @@ class LaserRuler {
   int rulerLenght;
   int distanceIncremet;
   std::vector<float> scans;
-  sensor_msgs::LaserEcho msg;
+  sensor_msgs::Range msg[8];
 
-  ros::Publisher distPublisher;
+  ros::Publisher distPublisher[8];
   std::future<void> future_task_;
 };
 }  // namespace vc200_driver

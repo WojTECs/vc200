@@ -4,7 +4,7 @@ namespace Interface {
 namespace UpstreamData {
 LaserRulerFrame::LaserRulerFrame() {
   protocolIndentificator = uint8_t{0x12};
-  datasetBinarySize = 0x4;
+  datasetBinarySize = 0x8;
 }
 void LaserRulerFrame::readData(LaserRulerDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
@@ -18,29 +18,21 @@ void LaserRulerFrame::deserialize(const uint8_t* iDataStream, const int iDataSiz
   }
 
   std::lock_guard<std::mutex> lock(dataMutex);
-  if (iDataStream[0] == 255) {
-    data.scan[0] = std::numeric_limits<float>::infinity();
-  } else {
-    data.scan[0] = iDataStream[0] / 1000.0;
-  }
-  if (iDataStream[1] == 255) {
-    data.scan[1] = std::numeric_limits<float>::infinity();
-  } else {
-    data.scan[1] = iDataStream[1] / 1000.0;
-  }
-  if (iDataStream[2] == 255) {
-    data.scan[2] = std::numeric_limits<float>::infinity();
-  } else {
-    data.scan[2] = iDataStream[2] / 1000.0;
-  }
-  if (iDataStream[3] == 255) {
-    data.scan[3] = std::numeric_limits<float>::infinity();
-  } else {
-    data.scan[3] = iDataStream[3] / 1000.0;
+
+  for (int i = 0; i < 8; i++){
+    handleSavingData(data.scan[i], iDataStream[i]);
   }
 }
 
 void LaserRulerFrame::doTheProcessing() {
+}
+
+void LaserRulerFrame::handleSavingData(float &data, uint8_t iDataStream) {
+  if (iDataStream == 255) {
+    data = std::numeric_limits<float>::infinity();
+  } else {
+    data = (float)iDataStream / 1000.0;
+  }
 }
 
 }  // namespace UpstreamData

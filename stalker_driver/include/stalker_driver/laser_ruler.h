@@ -6,7 +6,7 @@
 namespace Interface {
 namespace UpstreamData {
 struct LaserRulerDataset {
-  float scan[4];
+  float scan[8];
 };
 class LaserRulerFrame : public UpstreamDataType {
  private:
@@ -19,6 +19,7 @@ class LaserRulerFrame : public UpstreamDataType {
   virtual ~LaserRulerFrame();
   void readData(LaserRulerDataset& dest);
   void deserialize(const uint8_t* iDataStream, const int iDataSize) override;
+  void handleSavingData(float &data, uint8_t iDataStream);
 };
 }  // namespace UpstreamData
 }  // namespace Interface
