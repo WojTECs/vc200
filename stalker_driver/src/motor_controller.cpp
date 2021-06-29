@@ -13,8 +13,7 @@ MovementOrderLeftRightFrame::MovementOrderLeftRightFrame() {
   potocolIndentificator = "MovementFrame";
 }
 
-MovementOrderLeftRightFrame::~MovementOrderLeftRightFrame() {
-}
+MovementOrderLeftRightFrame::~MovementOrderLeftRightFrame() {}
 
 std::vector<uint8_t> MovementOrderLeftRightFrame::serialize() {
   std::vector<uint8_t> output(9);
@@ -40,19 +39,17 @@ void MovementOrderLeftRightFrame::setCommand(MovementCommandDataset& in) {
   doTheProcessing();
 }
 
-void MovementOrderLeftRightFrame::doTheProcessing() {
-}
+void MovementOrderLeftRightFrame::doTheProcessing() {}
 
 }  // namespace DownstreamData
 
 namespace UpstreamData {
 EncoderFrame::EncoderFrame() {
-  protocolIndentificator = uint8_t{ 0x07 };
+  protocolIndentificator = uint8_t{0x07};
   datasetBinarySize = 17;
 }
 
-EncoderFrame::~EncoderFrame() {
-}
+EncoderFrame::~EncoderFrame() {}
 
 void EncoderFrame::readData(EncoderDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
@@ -87,8 +84,7 @@ void EncoderFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) 
   doTheProcessing();
 }
 
-void EncoderFrame::doTheProcessing() {
-}
+void EncoderFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> EncoderFrame::getClone() {
 //   std::unique_ptr<EncoderFrame> encoderFrame(new EncoderFrame);
@@ -102,12 +98,11 @@ void EncoderFrame::doTheProcessing() {
 /////////////
 
 MovementInformationLeftRightFrame::MovementInformationLeftRightFrame() {
-  protocolIndentificator = uint8_t{ 0x02 };
+  protocolIndentificator = uint8_t{0x02};
   datasetBinarySize = 8;
 }
 
-MovementInformationLeftRightFrame::~MovementInformationLeftRightFrame() {
-}
+MovementInformationLeftRightFrame::~MovementInformationLeftRightFrame() {}
 
 void MovementInformationLeftRightFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   std::lock_guard<std::mutex> lock(dataMutex);
@@ -123,8 +118,7 @@ void MovementInformationLeftRightFrame::readData(MovementInformationDataset& des
   std::lock_guard<std::mutex> lock(dataMutex);
   dest = data;
 }
-void MovementInformationLeftRightFrame::doTheProcessing() {
-}
+void MovementInformationLeftRightFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> MovementInformationLeftRightFrame::getClone() {
 //   std::unique_ptr<MovementInformationLeftRightFrame> pwmFrame(new MovementInformationLeftRightFrame);

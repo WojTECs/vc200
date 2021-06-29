@@ -17,15 +17,15 @@ struct MovementCommandDataset {
   int shallQueue;
 };
 class MovementOrderLeftRightFrame : public Interface::DownstreamDataType {
-private:
+ private:
   MovementCommandDataset command;
   void doTheProcessing() override;
 
-public:
+ public:
   MovementOrderLeftRightFrame();
   virtual ~MovementOrderLeftRightFrame();
 
-  void setCommand(MovementCommandDataset &in);
+  void setCommand(MovementCommandDataset& in);
   std::vector<uint8_t> serialize();
   // void deserialize(const uint16_t* msgArray, uint16_t arraySize) override;
 };
@@ -42,10 +42,10 @@ struct MovementInformationDataset {
   int howManyQueued;
 };
 class MovementInformationLeftRightFrame : public Interface::UpstreamDataType {
-private:
+ private:
   MovementInformationDataset data;
 
-public:
+ public:
   MovementInformationLeftRightFrame();
   virtual ~MovementInformationLeftRightFrame();
 
@@ -73,10 +73,10 @@ struct EncoderDataset {
 };
 
 class EncoderFrame : public Interface::UpstreamDataType {
-private:
+ private:
   EncoderDataset data;
 
-public:
+ public:
   void readData(EncoderDataset& dest);
   EncoderFrame();
   virtual ~EncoderFrame();
@@ -88,4 +88,3 @@ public:
 }  // namespace UpstreamData
 
 }  // namespace Interface
-

@@ -2,7 +2,7 @@
 
 namespace vc200_driver {
 LaserRuler::LaserRuler(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
-    : laserRulerUpstream(new Interface::UpstreamData::LaserRulerFrame), stClient_(st_if), nh_(nh) {
+  : laserRulerUpstream(new Interface::UpstreamData::LaserRulerFrame), stClient_(st_if), nh_(nh) {
   stClient_->addExpectedDataType(laserRulerUpstream);
   scans.clear();
   scans.resize(0);

@@ -9,8 +9,7 @@
 namespace vc200_driver {
 class Configurator {
  public:
-  Configurator(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
-               ros::NodeHandle &nh);
+  Configurator(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh);
   std::shared_ptr<Interface::DownstreamData::MainConfigurationFrame> downstream;
 
  private:

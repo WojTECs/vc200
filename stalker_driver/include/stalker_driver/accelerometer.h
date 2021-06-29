@@ -8,20 +8,16 @@
 #include <stalker_driver/DEMA.h>
 #include <memory>
 
-namespace Interface
-{
-namespace UpstreamData
-{
-struct AccelerometerDataset
-{
+namespace Interface {
+namespace UpstreamData {
+struct AccelerometerDataset {
   float xAxis;
   float yAxis;
   float zAxis;
   uint32_t timestamp;
 };
-class AccelerometerFrame : public Interface::UpstreamDataType
-{
-private:
+class AccelerometerFrame : public Interface::UpstreamDataType {
+ private:
   DEMAFilter x, y, z;
   std::vector<AccelerometerDataset> datasets;
   AccelerometerDataset data;
@@ -30,7 +26,7 @@ private:
   void doTheProcessing() override;
   void print();
 
-public:
+ public:
   void readData(AccelerometerDataset& d);
   AccelerometerFrame();
   virtual ~AccelerometerFrame();
@@ -39,20 +35,17 @@ public:
 };
 }  // namespace UpstreamData
 
-namespace DownstreamData
-{
-struct AccelerometerCommandDataset
-{
+namespace DownstreamData {
+struct AccelerometerCommandDataset {
   int registryAddress;
   int registryValue;
 };
-class AccelerometerFrame : public Interface::DownstreamDataType
-{
-private:
+class AccelerometerFrame : public Interface::DownstreamDataType {
+ private:
   AccelerometerCommandDataset command;
   void doTheProcessing() override;
 
-public:
+ public:
   AccelerometerFrame();
   virtual ~AccelerometerFrame();
 

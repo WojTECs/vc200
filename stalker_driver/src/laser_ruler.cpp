@@ -40,8 +40,7 @@ void LaserRulerFrame::deserialize(const uint8_t* iDataStream, const int iDataSiz
   }
 }
 
-void LaserRulerFrame::doTheProcessing() {
-}
+void LaserRulerFrame::doTheProcessing() {}
 
 }  // namespace UpstreamData
 }  // namespace Interface

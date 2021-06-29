@@ -10,11 +10,11 @@ struct StatisticsDataset {
   uint32_t malformedPackages;
 };
 class PackageStatisticsFrame : public Interface::UpstreamDataType {
-private:
+ private:
   StatisticsDataset data;
   void doTheProcessing() override;
 
-public:
+ public:
   PackageStatisticsFrame();
   virtual ~PackageStatisticsFrame();
   void readData(StatisticsDataset& dest);

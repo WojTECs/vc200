@@ -4,11 +4,11 @@
 namespace Interface {
 namespace DownstreamData {
 class MainConfigurationFrame : public Interface::DownstreamDataType {
-private:
+ private:
   std::vector<uint8_t> command;
   void doTheProcessing();
 
-public:
+ public:
   MainConfigurationFrame();
   virtual ~MainConfigurationFrame();
 
