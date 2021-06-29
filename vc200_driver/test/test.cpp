@@ -16,7 +16,7 @@ void speedCb(const std_msgs::Float32ConstPtr msg) { speedCMD = msg->data; }
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "Stalker");
-  
+
   ros::NodeHandle nh;
   ros::NodeHandle priv_nh("~");
 
@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
   if (!driver.init(nh, priv_nh)) {
     return 0;
   }
-  
+
   driver.run();
 
   ros::Rate r(10);

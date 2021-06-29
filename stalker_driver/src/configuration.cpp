@@ -3,13 +3,9 @@
 
 namespace Interface {
 namespace DownstreamData {
-MainConfigurationFrame::MainConfigurationFrame() {
-  potocolIndentificator = "MainConfigurationFrame";
-}
+MainConfigurationFrame::MainConfigurationFrame() { potocolIndentificator = "MainConfigurationFrame"; }
 
-MainConfigurationFrame::~MainConfigurationFrame() {
-  stIdentifier = 0x00;
-}
+MainConfigurationFrame::~MainConfigurationFrame() { stIdentifier = 0x00; }
 
 std::vector<uint8_t> MainConfigurationFrame::serialize() {
   std::vector<uint8_t> output;
@@ -31,7 +27,6 @@ void MainConfigurationFrame::setCommand(std::vector<uint8_t>& in) {
   doTheProcessing();
 }
 
-void MainConfigurationFrame::doTheProcessing() {
-}
+void MainConfigurationFrame::doTheProcessing() {}
 }  // namespace DownstreamData
 }  // namespace Interface

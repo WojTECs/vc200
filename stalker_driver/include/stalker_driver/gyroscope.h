@@ -13,11 +13,11 @@ struct GyroscopeCommandDataset {
   int registryValue;
 };
 class GyroscopeFrame : public Interface::DownstreamDataType {
-private:
+ private:
   void doTheProcessing() override;
   GyroscopeCommandDataset command;
 
-public:
+ public:
   GyroscopeFrame();
   virtual ~GyroscopeFrame();
   void setCommand(GyroscopeCommandDataset& in);
@@ -35,7 +35,7 @@ struct GyroscopeDataset {
   uint32_t timestamp;
 };
 class GyroscopeFrame : public Interface::UpstreamDataType {
-private:
+ private:
   DEMAFilter x, y, z;
 
   std::vector<GyroscopeDataset> datasets;
@@ -43,7 +43,7 @@ private:
   GyroscopeDataset data;
   void doTheProcessing() override;
 
-public:
+ public:
   GyroscopeFrame();
   virtual ~GyroscopeFrame();
   void readData(GyroscopeDataset& dest);

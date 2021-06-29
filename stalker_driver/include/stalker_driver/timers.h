@@ -11,14 +11,14 @@ struct TimerConfigurationCommandDataset {
   int clockDivider;
 };
 class TimerConfigurationFrame : public Interface::DownstreamDataType {
-private:
+ private:
   TimerConfigurationCommandDataset command;
   void doTheProcessing();
 
-public:
+ public:
   TimerConfigurationFrame();
   virtual ~TimerConfigurationFrame();
-  void setCommand(TimerConfigurationCommandDataset &in);
+  void setCommand(TimerConfigurationCommandDataset& in);
   std::vector<uint8_t> serialize();
 
   // void deserialize(const uint16_t* msgArray, uint16_t arraySize) override;
@@ -35,11 +35,11 @@ struct ServiceTimeDataset {
   uint16_t UltrasoundTime;
 };
 class ServiceTimeFrame : public Interface::UpstreamDataType {
-private:
+ private:
   ServiceTimeDataset data;
   void doTheProcessing() override;
 
-public:
+ public:
   ServiceTimeFrame();
   virtual ~ServiceTimeFrame();
 
@@ -60,7 +60,7 @@ struct TimersDataset {
   uint32_t freq_data_send;
 };
 class TimersFrame : public Interface::UpstreamDataType {
-private:
+ private:
   uint16_t reg_psc_imu;
   uint16_t reg_arr_imu;
   uint8_t reg_clk_div_imu;
@@ -71,7 +71,7 @@ private:
   uint32_t freq_data_send;
   void doTheProcessing() override;
 
-public:
+ public:
   TimersFrame();
   virtual ~TimersFrame();
 
@@ -82,11 +82,11 @@ public:
 // namespace UpstreamData
 
 class TimeSyncFrame : public Interface::UpstreamDataType {
-private:
+ private:
   uint32_t timeSync;
   void doTheProcessing() override;
 
-public:
+ public:
   TimeSyncFrame();
   virtual ~TimeSyncFrame();
   void readData(uint32_t& dest);

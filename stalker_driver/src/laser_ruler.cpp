@@ -24,8 +24,7 @@ void LaserRulerFrame::deserialize(const uint8_t* iDataStream, const int iDataSiz
   }
 }
 
-void LaserRulerFrame::doTheProcessing() {
-}
+void LaserRulerFrame::doTheProcessing() {}
 
 void LaserRulerFrame::handleSavingData(float &data, uint8_t iDataStream) {
   if (iDataStream == 255) {

@@ -39,6 +39,7 @@ src/DownstreamDataType.cpp
 src/STInterfaceClientUDP.cpp
 src/UpstreamDataType.cpp
 src/accelerometer.cpp
+src/current_measurement.cpp
 src/configuration.cpp
 src/gyroscope.cpp
 src/magnetometer.cpp

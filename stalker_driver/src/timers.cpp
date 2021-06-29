@@ -10,8 +10,7 @@ TimerConfigurationFrame::TimerConfigurationFrame() {
   stIdentifier = 0x03;
 }
 
-TimerConfigurationFrame::~TimerConfigurationFrame() {
-}
+TimerConfigurationFrame::~TimerConfigurationFrame() {}
 
 std::vector<uint8_t> TimerConfigurationFrame::serialize() {
   std::vector<uint8_t> output(7);
@@ -33,25 +32,23 @@ void TimerConfigurationFrame::setCommand(TimerConfigurationCommandDataset& in) {
   doTheProcessing();
 }
 
-void TimerConfigurationFrame::doTheProcessing() {
-}
+void TimerConfigurationFrame::doTheProcessing() {}
 }  // namespace DownstreamData
 namespace UpstreamData {
 // ServiceTimeFrame start
 ServiceTimeFrame::ServiceTimeFrame() {
-  protocolIndentificator = uint8_t{ 0x11 };
+  protocolIndentificator = uint8_t{0x11};
   datasetBinarySize = 12;
 }
 
-ServiceTimeFrame::~ServiceTimeFrame() {
-}
+ServiceTimeFrame::~ServiceTimeFrame() {}
 void ServiceTimeFrame::readData(ServiceTimeDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
   dest = data;
 }
 void ServiceTimeFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   if (iDataSize != datasetBinarySize) {
-    std::cout <<"Bad Time Sync frame received. Length is mismatching"<< std::endl;
+    std::cout << "Bad Time Sync frame received. Length is mismatching" << std::endl;
     return;
   }
   std::lock_guard<std::mutex> lock(dataMutex);
@@ -64,8 +61,7 @@ void ServiceTimeFrame::deserialize(const uint8_t* iDataStream, const int iDataSi
   doTheProcessing();
 }
 
-void ServiceTimeFrame::doTheProcessing() {
-}
+void ServiceTimeFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> ServiceTimeFrame::getClone() {
 //   std::unique_ptr<ServiceTimeFrame> serviceTimeFrame(new ServiceTimeFrame);
@@ -79,12 +75,11 @@ void ServiceTimeFrame::doTheProcessing() {
 
 // TimersFrame start
 TimersFrame::TimersFrame() {
-  protocolIndentificator = uint8_t{ 0x03 };
+  protocolIndentificator = uint8_t{0x03};
   datasetBinarySize = 18;  // Unknown yet therefore can't be implemented
 }
 
-TimersFrame::~TimersFrame() {
-}
+TimersFrame::~TimersFrame() {}
 void TimersFrame::readData(TimersDataset& dest) {
   dataMutex.lock();
   dest.reg_psc_imu = reg_psc_imu;
@@ -112,8 +107,7 @@ void TimersFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   dataMutex.unlock();
 }
 
-void TimersFrame::doTheProcessing() {
-}
+void TimersFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> TimersFrame::getClone() {
 //   std::unique_ptr<TimersFrame> timersFrame(new TimersFrame);
@@ -128,12 +122,11 @@ void TimersFrame::doTheProcessing() {
 
 // TimeSyncFrame start
 TimeSyncFrame::TimeSyncFrame() {
-  protocolIndentificator = uint8_t{ 0xFF };
+  protocolIndentificator = uint8_t{0xFF};
   datasetBinarySize = 4;
 }
 
-TimeSyncFrame::~TimeSyncFrame() {
-}
+TimeSyncFrame::~TimeSyncFrame() {}
 
 void TimeSyncFrame::readData(uint32_t& dest) {
   dataMutex.lock();
@@ -142,7 +135,7 @@ void TimeSyncFrame::readData(uint32_t& dest) {
 }
 void TimeSyncFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   if (iDataSize != datasetBinarySize) {
-    std::cout <<"Bad Time Sync frame received. Length is mismatching"<<std::endl;
+    std::cout << "Bad Time Sync frame received. Length is mismatching" << std::endl;
     return;
   }
   dataMutex.lock();
@@ -151,8 +144,7 @@ void TimeSyncFrame::deserialize(const uint8_t* iDataStream, const int iDataSize)
   dataMutex.unlock();
 }
 
-void TimeSyncFrame::doTheProcessing() {
-}
+void TimeSyncFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> TimeSyncFrame::getClone() {
 //   std::unique_ptr<TimeSyncFrame> timeSyncFrame(new TimeSyncFrame);

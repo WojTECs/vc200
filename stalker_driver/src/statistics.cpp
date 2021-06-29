@@ -3,12 +3,11 @@
 namespace Interface {
 namespace UpstreamData {
 PackageStatisticsFrame::PackageStatisticsFrame() {
-  protocolIndentificator = uint8_t{ 0xFE };
+  protocolIndentificator = uint8_t{0xFE};
   datasetBinarySize = 8;
 }
 
-PackageStatisticsFrame::~PackageStatisticsFrame() {
-}
+PackageStatisticsFrame::~PackageStatisticsFrame() {}
 
 void PackageStatisticsFrame::deserialize(const uint8_t* iDataStream, const int iDataSize) {
   if (iDataSize != datasetBinarySize) {
@@ -25,8 +24,7 @@ void PackageStatisticsFrame::readData(StatisticsDataset& dest) {
   std::lock_guard<std::mutex> lock(dataMutex);
   dest = data;
 }
-void PackageStatisticsFrame::doTheProcessing() {
-}
+void PackageStatisticsFrame::doTheProcessing() {}
 
 // std::unique_ptr<Interface::UpstreamDataType> PackageStatisticsFrame::getClone() {
 //   std::unique_ptr<PackageStatisticsFrame> packageStatisticsFrame(new PackageStatisticsFrame);

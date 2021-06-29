@@ -2,7 +2,7 @@
 
 namespace vc200_robot_hw {
 VC200RobotHw::VC200RobotHw(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle& nh)
-    : imu_ctrl(st_if, nh) {
+  : imu_ctrl(st_if, nh) {
   rateHz_ = 100;
 }
 bool VC200RobotHw::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {

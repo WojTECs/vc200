@@ -32,21 +32,21 @@ void MagnetometerFrame::doTheProcessing() {}
 
 namespace UpstreamData {
 MagnetometerFrame::MagnetometerFrame()
-    : x(0.05, 0)
-    , y(0.05, 0)
-    , z(0.05, 0)
-    // , offset_x(-644.25)
-    , offset_x(-0.0)
-    // , offset_y(236.25)
-    , offset_y(0.0)
-    // , offset_z(731.4)
-    , offset_z(0.0)
-    // , scale_x(1.0112138016019716)
-    , scale_x(0.0)
-    // , scale_y(1.0112138016019716)
-    , scale_y(0.0)
-    // , scale_z(0.9783023366714355)
-    , scale_z(0.0) {
+  : x(0.05, 0)
+  , y(0.05, 0)
+  , z(0.05, 0)
+  // , offset_x(-644.25)
+  , offset_x(-0.0)
+  // , offset_y(236.25)
+  , offset_y(0.0)
+  // , offset_z(731.4)
+  , offset_z(0.0)
+  // , scale_x(1.0112138016019716)
+  , scale_x(0.0)
+  // , scale_y(1.0112138016019716)
+  , scale_y(0.0)
+  // , scale_z(0.9783023366714355)
+  , scale_z(0.0) {
   protocolIndentificator = uint8_t{0x06};
   datasetBinarySize = 10;
 }

@@ -3,17 +3,17 @@
   { x, 0, 0, 0, y, 0, 0, 0, z }
 namespace vc200_driver {
 IMU::IMU(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
-    : angularVelocityCov cov_matrix(0.0001, 0.0001, 0.0001)
-    , linearAccelerationCov cov_matrix(0.0001, 0.0001, 0.0001)
-    , orientationCov cov_matrix(-1.0, -1.0, -1.0)
-    , gyroXoffset(0.0)
-    , gyroYoffset(0.0)
-    , gyroZoffset(0.0)
-    , accXoffset(0.0)
-    , accYoffset(0.0)
-    , accZoffset(0.230514)
-    , stClient_(st_if)
-    , nh_(nh) {
+  : angularVelocityCov cov_matrix(0.0001, 0.0001, 0.0001)
+  , linearAccelerationCov cov_matrix(0.0001, 0.0001, 0.0001)
+  , orientationCov cov_matrix(-1.0, -1.0, -1.0)
+  , gyroXoffset(0.0)
+  , gyroYoffset(0.0)
+  , gyroZoffset(0.0)
+  , accXoffset(0.0)
+  , accYoffset(0.0)
+  , accZoffset(0.230514)
+  , stClient_(st_if)
+  , nh_(nh) {
   // Accelerometer
   stClient_->addExpectedDataType(accelerometer.upstream);
   // Gyroscope

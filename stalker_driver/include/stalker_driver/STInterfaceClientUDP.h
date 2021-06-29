@@ -10,18 +10,15 @@
 #include "stalker_driver/DownstreamDataType.h"
 #include "stalker_driver/UpstreamDataType.h"
 
-namespace Interface
-{
+namespace Interface {
 class UpstreamDataType;
 }
 
-namespace STInterface
-{
+namespace STInterface {
 class Session;
 
-class STInterfaceClientUDP
-{
-private:
+class STInterfaceClientUDP {
+ private:
   std::shared_ptr<Interface::UpstreamDataType> expectedDataTypesRegistry[256];
 
   boost::asio::io_service tcpIoService;
@@ -36,11 +33,8 @@ private:
   std::string stPort;     // STM receiving port
   bool endReceiving;
 
-public:
-  enum
-  {
-    max_length = 1024
-  };
+ public:
+  enum { max_length = 1024 };
   uint8_t rawSocketData[max_length];
   boost::asio::ip::udp::socket udpSocket;
   boost::asio::ip::udp::endpoint senderEndpoint;
@@ -54,9 +48,7 @@ public:
   void publishData(Interface::DownstreamDataType& iData);
 
   STInterfaceClientUDP(unsigned short iPort, std::string stAddress, std::string stPort);
-  virtual ~STInterfaceClientUDP()
-  {
-  }
+  virtual ~STInterfaceClientUDP() {}
 };
 
 }  // namespace STInterface

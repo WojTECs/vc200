@@ -15,15 +15,13 @@
 namespace vc200_robot_hw {
 class VC200RobotHw : public hardware_interface::RobotHW {
  public:
-  VC200RobotHw(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if,
-               ros::NodeHandle& nh);
+  VC200RobotHw(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle& nh);
   ~VC200RobotHw(){};
   bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh);
   void read(const ros::Time& time, const ros::Duration& period);
   void write(const ros::Time& time, const ros::Duration& period);
 
  private:
-
   double rateHz_;
   vc200_driver::IMU imu_ctrl;
   ros::ServiceServer imuCalibration;
