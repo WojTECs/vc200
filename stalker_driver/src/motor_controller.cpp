@@ -28,6 +28,9 @@ std::vector<uint8_t> MovementOrderLeftRightFrame::serialize() {
   output[6] = command.timeToDrive >> 8;
   output[7] = command.timeToDrive & 0xFF;
   output[8] = command.shallQueue;
+
+  // std::cout << "PWM command: " << command.leftSidePWM << "\t" << command.rightSidePWM << std::endl;
+
   return output;
 }
 

@@ -120,6 +120,7 @@ namespace vc200_driver
       currentLogFile << "," << std::to_string(currentVector[i].channel_B) << "\n";
     }
     currentLogFile.close();
+    
     leftChannelPid_.setPoint(leftVelocityCommand);
     rightChannelPid_.setPoint(rightVelocityCommand);
     leftChannelPid_.update(encData.leftSideVelocity.value);
