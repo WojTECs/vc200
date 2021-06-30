@@ -78,9 +78,8 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   time(&rawtime);
   timeinfo = localtime(&rawtime);
   strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
-  currentLogFile.open(currentFileName, std::ios::app);
+  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
   if (currentLogFile.is_open()) {
-    currentLogFile << "timestamp,channel_A,channel_B\n";
     currentLogFile.close();
     std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
   }
@@ -104,12 +103,12 @@ void MotorController::readData() {
   currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
                             leftJointState.position, rightJointState.position);
 
-  currentLogFile.open(currentFileName, std::ios::app);
-  currentLogFile << std::to_string(ros::Time::now().toNSec());
-  for (size_t i = 0; i < currentVector.size(); i++) {  // first element is empty for timestamp
-    currentLogFile << "," << std::to_string(currentVector[i].channel_A);
-    currentLogFile << "," << std::to_string(currentVector[i].channel_B) << "\n";
-  }
+  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  uint64_t timestamp = ros::Time::now().toNSec();
+  currentLogFile.write((char*)&timestamp, sizeof(timestamp));
+  size_t size = currentVector.size();
+  currentLogFile.write((char*)&size, sizeof(size));
+  currentLogFile.write((char*)&currentVector[0], currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
   currentLogFile.close();
 
   leftChannelPid_.setPoint(leftVelocityCommand);
