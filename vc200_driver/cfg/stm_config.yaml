@@ -1,5 +1,5 @@
 laser_ruler:
-  number_of_sensors: 4
+  number_of_sensors: 8
   max_distance: 0.2        # [m]
   min_distance: 0.005      # [m]
   ruler_lenght: 0.01        # [m]
