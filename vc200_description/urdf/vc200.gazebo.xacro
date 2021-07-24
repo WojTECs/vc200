@@ -109,7 +109,7 @@
   reference="${robot_name}/rplidar_link" 
   name="rplidar" 
   frame_id="${robot_name}/rplidar_link" 
-  update_rate="40" 
+  update_rate="50" 
   samples="720" 
   visualize="true" 
   type_prefix="gpu_" />

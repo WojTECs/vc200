@@ -12,7 +12,7 @@
                     <scan>
                         <horizontal>
                             <samples>${samples}</samples>
-                            <resolution>0.51</resolution>
+                            <resolution>1</resolution>
                             <min_angle>${-PI}</min_angle>
                             <max_angle>${PI}</max_angle>
                         </horizontal>
