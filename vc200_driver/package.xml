@@ -54,7 +54,12 @@
   <exec_depend>roscpp</exec_depend>
   <depend>stalker_driver</depend>
   <depend>pid</depend>
-
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>hardware_interface</depend>
+  <depend>controller_manager</depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
