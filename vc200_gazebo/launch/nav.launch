@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!-- Load joint controller configurations from YAML file to parameter server -->
+    <arg name="robot_name" default="vc200" />
+    <arg name="rate" default="100" />
+    <arg name="ignore_timestamp" default="true" />
+    <arg name="use_tf_static" default="true" />
+    <arg name="model" default="$(find vc200_description)/urdf/vc200.gazebo.xacro" />
+    <!-- <arg name="model" default="$(find vc200_description)/urdf/test.xacro" /> -->
+
+    <arg name="paused" default="false" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+    <arg name="gui_required" default="true" />
+    <arg name="mesh_enabled" default="true" />
+
+
+    <arg name="robot_namespace" default="/" />
+    <group ns="$(arg robot_namespace)">
+
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+            <rosparam file="$(find vc200_gazebo)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find vc200_gazebo)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find vc200_gazebo)/cfg/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find vc200_gazebo)/cfg/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find vc200_gazebo)/cfg/base_local_planner_params.yaml" command="load" />
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="planner_frequency" value="1.0" />
+            <param name="planner_patience" value="5.0" />
+
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+            <param name="controller_frequency" value="5.0" />
+            <param name="controller_patience" value="15.0" />
+        </node>
+    </group>
+
+</launch>
