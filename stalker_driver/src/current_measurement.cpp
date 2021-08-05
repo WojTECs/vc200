@@ -37,8 +37,8 @@ void CurrentMeasurementFrame::readData(CurrentMeasurementDataset &dest,
         zeroOffsetCalibration.pop();
       }
 
-      zeroOffset.channel_A = (int16_t)((double)zeroOffset.channel_A / (double)CALIBRATION_QUEUE_LEN);
-      zeroOffset.channel_B = (int16_t)((double)zeroOffset.channel_B / (double)CALIBRATION_QUEUE_LEN);
+      //zeroOffset.channel_A = (int16_t)((double)zeroOffset.channel_A / (double)CALIBRATION_QUEUE_LEN);
+      //zeroOffset.channel_B = (int16_t)((double)zeroOffset.channel_B / (double)CALIBRATION_QUEUE_LEN);
 
       // zeroPosition.channel_A += zeroOffset.channel_A;
       // zeroPosition.channel_B += zeroOffset.channel_B;
@@ -98,6 +98,7 @@ void CurrentMeasurementFrame::doTheProcessing() {
   dataAvg = {0.0, 0.0};
   int32_t tmpA = 0;
   int32_t tmpB = 0;
+  zeroOffset = {0, 0};
 
   // std::cout << "---------------------------------------------------------------------------------------" <<
   // std::endl;
@@ -105,7 +106,7 @@ void CurrentMeasurementFrame::doTheProcessing() {
   for (int i = 0; i < incomingDatasets.size(); i++) {
     tmpA += incomingDatasets[i].channel_A;
     tmpB += incomingDatasets[i].channel_B;
-
+    
     incomingDatasets[i].channel_A = (int16_t)incomingDatasets[i].channel_A + zeroOffset.channel_A;
     incomingDatasets[i].channel_B = (int16_t)incomingDatasets[i].channel_B + zeroOffset.channel_B;
 
