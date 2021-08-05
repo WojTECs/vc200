@@ -39,15 +39,14 @@ class MotorController {
 
  private:
   PID leftChannelPid_, rightChannelPid_;
-  char currentFileName[50];
-  std::ofstream currentLogFile;
+  // char currentFileName[50];
+  // std::ofstream currentLogFile;
 
   joint_state leftJointState;
   joint_state rightJointState;
   double leftVelocityCommand;
   double rightVelocityCommand;
-  hardware_interface::JointHandle frontLeftJointHandle, rearLeftJointHandle, frontRightJointHandle,
-      rearRightJointHandle;
+  hardware_interface::JointHandle leftJointHandle, rightJointHandle;
 
   double max_command;
   int encoder_resolution;

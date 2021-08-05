@@ -16,62 +16,39 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
 
   priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
 
-  std::string joint_front_left_name;
-  joint_front_left_name = "front_left_wheel";
-  if (!priv_nh_.getParam("joint/front_left/name", joint_front_left_name)) {
-    ROS_WARN_STREAM("Can not find name of front left joint, default: " << joint_front_left_name);
+  std::string joint_left_name;
+  joint_left_name = "left_wheel";
+  if (!priv_nh_.getParam("joint/left/name", joint_left_name)) {
+    ROS_WARN_STREAM("Can not find name of left joint, default: " << joint_left_name);
   }
 
-  std::string joint_front_right_name;
-  joint_front_right_name = "front_right_wheel";
-  if (!priv_nh_.getParam("joint/front_right/name", joint_front_right_name)) {
-    ROS_WARN_STREAM("Can not find name of front right joint, default: " << joint_front_right_name);
-  }
-
-  std::string joint_rear_left_name;
-  joint_rear_left_name = "rear_left_wheel";
-  if (!priv_nh_.getParam("joint/rear_left/name", joint_rear_left_name)) {
-    ROS_WARN_STREAM("Can not find name of rear left joint, default: " << joint_rear_left_name);
-  }
-  std::string joint_rear_right_name;
-  joint_rear_right_name = "rear_right_wheel";
-  if (!priv_nh_.getParam("joint/rear_right/name", joint_rear_right_name)) {
-    ROS_WARN_STREAM("Can not find name of rear right joint, default: " << joint_rear_right_name);
+  std::string joint_right_name;
+  joint_right_name = "right_wheel";
+  if (!priv_nh_.getParam("joint/right/name", joint_right_name)) {
+    ROS_WARN_STREAM("Can not find name of right joint, default: " << joint_right_name);
   }
 
   max_command = 100.0;
   if (!priv_nh_.getParam("max_command", max_command)) {
-    ROS_WARN_STREAM("Can not find max command of left joint, default: " << max_command);
+    ROS_WARN_STREAM("Can not find max command of joints, default: " << max_command);
   }
 
   encoder_resolution = 256;
   if (!priv_nh_.getParam("encoders_resolution", encoder_resolution)) {
-    ROS_WARN_STREAM("Can not find encoder resolution of left joint, default: " << encoder_resolution);
+    ROS_WARN_STREAM("Can not find encoder resolution of joints, default: " << encoder_resolution);
   }
 
-  hardware_interface::JointStateHandle state_front_left_handle(joint_front_left_name, &leftJointState.position,
+  hardware_interface::JointStateHandle left_joint_state_handle(joint_left_name, &leftJointState.position,
                                                                &leftJointState.velocity, &leftJointState.effort);
 
-  hardware_interface::JointHandle front_left_handle(state_front_left_handle, &leftVelocityCommand);
-  frontLeftJointHandle = front_left_handle;
+  hardware_interface::JointHandle left_joint_handle(left_joint_state_handle, &leftVelocityCommand);
+  leftJointHandle = left_joint_handle;
 
-  hardware_interface::JointStateHandle state_rear_left_handle(joint_rear_left_name, &leftJointState.position,
-                                                              &leftJointState.velocity, &leftJointState.effort);
+  hardware_interface::JointStateHandle right_joint_state_handle(joint_right_name, &rightJointState.position,
+                                                          &rightJointState.velocity, &rightJointState.effort);
 
-  hardware_interface::JointHandle rear_left_handle(state_rear_left_handle, &leftVelocityCommand);
-  rearLeftJointHandle = rear_left_handle;
-
-  hardware_interface::JointStateHandle state_front_right_handle(joint_front_right_name, &rightJointState.position,
-                                                                &rightJointState.velocity, &rightJointState.effort);
-
-  hardware_interface::JointHandle front_right_handle(state_front_right_handle, &rightVelocityCommand);
-  frontRightJointHandle = front_right_handle;
-
-  hardware_interface::JointStateHandle state_rear_right_handle(joint_rear_right_name, &rightJointState.position,
-                                                               &rightJointState.velocity, &rightJointState.effort);
-
-  hardware_interface::JointHandle rear_right_handle(state_rear_right_handle, &rightVelocityCommand);
-  rearRightJointHandle = rear_right_handle;
+  hardware_interface::JointHandle right_joint_handle(right_joint_state_handle, &rightVelocityCommand);
+  rightJointHandle = right_joint_handle;
 
   // time_t rawtime;
   // struct tm *timeinfo;
@@ -108,8 +85,8 @@ void MotorController::readData() {
   // currentLogFile.write((char*)&timestamp, sizeof(timestamp));
   // size_t size = currentVector.size();
   // currentLogFile.write((char*)&size, sizeof(size));
-  // currentLogFile.write((char*)&currentVector[0], currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
-  // currentLogFile.close();
+  // currentLogFile.write((char*)&currentVector[0], currentVector.size() *
+  // sizeof(Interface::UpstreamData::CurrentMeasurementDataset)); currentLogFile.close();
 
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
@@ -164,10 +141,8 @@ void MotorController::writeData() {
 
 std::vector<hardware_interface::JointHandle> MotorController::getJoints() {
   std::vector<hardware_interface::JointHandle> output;
-  output.push_back(frontLeftJointHandle);
-  output.push_back(rearLeftJointHandle);
-  output.push_back(frontRightJointHandle);
-  output.push_back(rearRightJointHandle);
+  output.push_back(leftJointHandle);
+  output.push_back(rightJointHandle);
 
   return output;
 }

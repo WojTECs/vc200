@@ -22,14 +22,11 @@ motor_contoller:
   max_command: 1000.0
   encoders_resolution: 6532
   joint:
-    front_left:
-      name: $(arg robot_name)/front_left_wheel_joint
-    front_right:
-      name: $(arg robot_name)/front_right_wheel_joint
-    rear_left:
-      name: $(arg robot_name)/rear_left_wheel_joint
-    rear_right:
-      name: $(arg robot_name)/rear_right_wheel_joint
+    left:
+      name: $(arg robot_name)/left_wheel_joint
+    right:
+      name: $(arg robot_name)/right_wheel_joint
+
 
 pid:
   right:
