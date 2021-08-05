@@ -40,7 +40,7 @@ bool VC200Driver::init(ros::NodeHandle &nh, ros::NodeHandle &priv_nh) {
     timersPtr_.reset(new Timers(stClientPtr_, priv_nh));
 
     //   imuSensorsPtr_->clibrate()
-    laserRulerPtr_.reset(new LaserRuler(stClientPtr_,priv_nh));
+    laserRulerPtr_.reset(new LaserRuler(stClientPtr_, priv_nh));
   } catch (std::exception &e) {
     ROS_ERROR_STREAM("Exception during creating interfaces: \n" << e.what());
     return false;

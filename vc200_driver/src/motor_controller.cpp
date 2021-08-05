@@ -2,15 +2,17 @@
 
 namespace vc200_driver {
 MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
-    : motorDownstream(new Interface::DownstreamData::MovementOrderLeftRightFrame)
-    , motorUpstream(new Interface::UpstreamData::MovementInformationLeftRightFrame)
-    , encUpstream(new Interface::UpstreamData::EncoderFrame)
-    , stClient_(st_if)
-    , nh_(nh)
-    , leftChannelPid_(nh, "pid/left")
-    , rightChannelPid_(nh, "pid/right") {
+  : motorDownstream(new Interface::DownstreamData::MovementOrderLeftRightFrame)
+  , motorUpstream(new Interface::UpstreamData::MovementInformationLeftRightFrame)
+  , encUpstream(new Interface::UpstreamData::EncoderFrame)
+  , currentUpstream(new Interface::UpstreamData::CurrentMeasurementFrame)
+  , stClient_(st_if)
+  , nh_(nh)
+  , leftChannelPid_(nh, "pid/left")
+  , rightChannelPid_(nh, "pid/right") {
   stClient_->addExpectedDataType(motorUpstream);
   stClient_->addExpectedDataType(encUpstream);
+  stClient_->addExpectedDataType(currentUpstream);
 
   priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
 
@@ -47,8 +49,6 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
     ROS_WARN_STREAM("Can not find encoder resolution of left joint, default: " << encoder_resolution);
   }
 
-
-
   hardware_interface::JointStateHandle state_front_left_handle(joint_front_left_name, &leftJointState.position,
                                                                &leftJointState.velocity, &leftJointState.effort);
 
@@ -73,6 +73,17 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   hardware_interface::JointHandle rear_right_handle(state_rear_right_handle, &rightVelocityCommand);
   rearRightJointHandle = rear_right_handle;
 
+  // time_t rawtime;
+  // struct tm *timeinfo;
+  // time(&rawtime);
+  // timeinfo = localtime(&rawtime);
+  // strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
+  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  // if (currentLogFile.is_open()) {
+  //   currentLogFile.close();
+  //   std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
+  // }
+
   // command timeout
 }
 
@@ -85,21 +96,35 @@ void MotorController::sendCommand(Interface::DownstreamData::MovementCommandData
 void MotorController::readData() {
   Interface::UpstreamData::MovementInformationDataset motorData;
   Interface::UpstreamData::EncoderDataset encData;
+  Interface::UpstreamData::CurrentMeasurementDataset currentData;
+  std::vector<Interface::UpstreamData::CurrentMeasurementDataset> currentVector;
   motorUpstream->readData(motorData);
   encUpstream->readData(encData);
+  currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
+                            leftJointState.position, rightJointState.position);
+
+  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  // uint64_t timestamp = ros::Time::now().toNSec();
+  // currentLogFile.write((char*)&timestamp, sizeof(timestamp));
+  // size_t size = currentVector.size();
+  // currentLogFile.write((char*)&size, sizeof(size));
+  // currentLogFile.write((char*)&currentVector[0], currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
+  // currentLogFile.close();
+
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
   leftChannelPid_.update(encData.leftSideVelocity.value);
   rightChannelPid_.update(encData.rightSideVelocity.value);
 
-  leftJointState.effort = motorData.leftWheelPwm;
+  leftJointState.effort = currentData.channel_A;
   leftJointState.velocity = encData.leftSideVelocity.value;
   leftJointState.position = (encData.leftSideDistance.int_value / (float)encoder_resolution) * 2.0 * M_PI;
 
-  rightJointState.effort = motorData.rightWheelPwm;
+  rightJointState.effort = currentData.channel_B;
   rightJointState.velocity = encData.rightSideVelocity.value;
   rightJointState.position = (encData.rightSideDistance.int_value / (float)encoder_resolution) * 2.0 * M_PI;
 }
+
 void MotorController::writeData() {
   Interface::DownstreamData::MovementCommandDataset cmd;
 
@@ -123,7 +148,6 @@ void MotorController::writeData() {
   } else {
     cmd.rightDirection = 0;
   }
-
   cmd.shallQueue = 0;
   cmd.timeToDrive = 500;
 

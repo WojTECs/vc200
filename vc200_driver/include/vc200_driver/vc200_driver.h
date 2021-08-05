@@ -33,6 +33,7 @@ class VC200Driver {
   void run();
   void stop();
   std::unique_ptr<LaserRuler> laserRulerPtr_;
+
  private:
   std::unique_ptr<IMU> imuSensorsPtr_;
   std::unique_ptr<MotorController> motorControllerPtr_;
