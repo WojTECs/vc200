@@ -30,9 +30,9 @@ motor_contoller:
 
 pid:
   right:
-    Kp: 20.0
-    Ki: 5.0
-    Kd: 0.5
+    Kp: 4.0
+    Ki: 9.0
+    Kd: 0.6
     upperLimit: 1000.0
     lowerLimit: -1000.0
     alfa: 0.07
@@ -42,9 +42,9 @@ pid:
     upLimitOn: true
     windupOn: true
   left:
-    Kp: 20.0
-    Ki: 5.0
-    Kd: 0.5
+    Kp: 4.0
+    Ki: 9.0
+    Kd: 0.6
     upperLimit: 1000.0
     lowerLimit: -1000.0
     alfa: 0.07
