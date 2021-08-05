@@ -73,16 +73,16 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   hardware_interface::JointHandle rear_right_handle(state_rear_right_handle, &rightVelocityCommand);
   rearRightJointHandle = rear_right_handle;
 
-  time_t rawtime;
-  struct tm *timeinfo;
-  time(&rawtime);
-  timeinfo = localtime(&rawtime);
-  strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
-  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
-  if (currentLogFile.is_open()) {
-    currentLogFile.close();
-    std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
-  }
+  // time_t rawtime;
+  // struct tm *timeinfo;
+  // time(&rawtime);
+  // timeinfo = localtime(&rawtime);
+  // strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
+  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  // if (currentLogFile.is_open()) {
+  //   currentLogFile.close();
+  //   std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
+  // }
 
   // command timeout
 }
@@ -103,13 +103,13 @@ void MotorController::readData() {
   currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
                             leftJointState.position, rightJointState.position);
 
-  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
-  uint64_t timestamp = ros::Time::now().toNSec();
-  currentLogFile.write((char*)&timestamp, sizeof(timestamp));
-  size_t size = currentVector.size();
-  currentLogFile.write((char*)&size, sizeof(size));
-  currentLogFile.write((char*)&currentVector[0], currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
-  currentLogFile.close();
+  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  // uint64_t timestamp = ros::Time::now().toNSec();
+  // currentLogFile.write((char*)&timestamp, sizeof(timestamp));
+  // size_t size = currentVector.size();
+  // currentLogFile.write((char*)&size, sizeof(size));
+  // currentLogFile.write((char*)&currentVector[0], currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
+  // currentLogFile.close();
 
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
