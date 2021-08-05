@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<!-- <robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
-<robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- <robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
 
     <xacro:include filename="$(find vc200_description)/urdf/parameters.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/macros.xacro" />
@@ -50,18 +50,13 @@
     offset="0.014" 
     height="0.035" 
     width="0.007" />
-  
-    <xacro:lidar 
-      name="${robot_name}/lidar"
-      radius="0.035" 
-      length="0.022" 
-      dx="0.0425" 
-      dy="0.0" 
-      dz="0.205"
-      ar="0.0" 
-      ap="0.0" 
-      ay="${PI}"
-    />
+  <xacro:lidar 
+    name="${robot_name}/lidar"
+    radius="0.035" 
+    height="0.03"
+    mass="0.17" >
+    <origin xyz="0.1 0.0 ${0.015+chassis_height+clearence}" rpy="0.0 0.0 0.0"/>
+  </xacro:lidar>
     <!-- radius="0.035" 
     length="0.0022"  -->
 
