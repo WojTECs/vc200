@@ -20,7 +20,7 @@ imu:
 
 motor_contoller:
   max_command: 1000.0
-  encoders_resolution: 256
+  encoders_resolution: 6532
   joint:
     front_left:
       name: $(arg robot_name)/front_left_wheel_joint
@@ -33,9 +33,9 @@ motor_contoller:
 
 pid:
   right:
-    Kp: 14.0
-    Ki: 7.0
-    Kd: 0.3
+    Kp: 20.0
+    Ki: 5.0
+    Kd: 0.5
     upperLimit: 1000.0
     lowerLimit: -1000.0
     alfa: 0.07
@@ -45,9 +45,9 @@ pid:
     upLimitOn: true
     windupOn: true
   left:
-    Kp: 14.0
-    Ki: 7.0
-    Kd: 0.3
+    Kp: 20.0
+    Ki: 5.0
+    Kd: 0.5
     upperLimit: 1000.0
     lowerLimit: -1000.0
     alfa: 0.07
