@@ -21,6 +21,11 @@
         front_right_velocity
         rear_left_velocity
         rear_right_velocity "/> -->
+    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" output="screen">
+        <rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load" />
+        <remap from="odometry/filtered" to="odometry" />
+    </node>
+
 
     <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn 
         imu_sensor_controller 
