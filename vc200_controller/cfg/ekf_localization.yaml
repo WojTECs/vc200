@@ -12,15 +12,22 @@ world_frame: $(arg robot_name)/odom # nazwa ukladu world
 
 dynamic_process_noise_covariance: true
 
+#  X     Y     Z
+#  r     p     y
+#  dX    dY    dZ
+#  dr    dp    dy
+#  ddX   ddy   ddZ
+# 
 
 # # Wejscie IMU 0
 imu0: /stm_imu #_filtered
 imu0_config: [  false,  false,  false,
                 false,  false,  false,
                 false,  false,  false,
-                true,  true,  true, # Wez predkosc katowa w osi z do estymaty
-                true,   true,  true]
+                false,  false,  true, # Wez predkosc katowa w osi z do estymaty
+                false,   false,  false]
 imu0_differential: false
+
 odom0: /diff_drive/odom
 odom0_config: [ false,  false,  false,
                 false,  false,  false,

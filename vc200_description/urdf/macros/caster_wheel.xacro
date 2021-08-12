@@ -54,7 +54,7 @@
         </link>
 
 
-        <joint name="${name}_rotation_joint" type="continuous">
+        <joint name="${name}_rotation_joint" type="fixed">
             <parent link="${robot_name}/base_link" />
             <child link="${name}_rotation_link" />
             <origin xyz="${dx} ${dy} ${(caster_base_length)/2 + 2*radius}" rpy="0 0 0" />
@@ -62,7 +62,7 @@
             <!-- <dynamics damping="0.00001" friction="1.0" /> -->
         </joint>
 
-        <joint name="${name}_wheel_joint" type="continuous">
+        <joint name="${name}_wheel_joint" type="fixed">
             <parent link="${name}_rotation_link" />
             <child link="${name}_wheel_link" />
             <origin xyz="${offset} 0 ${-(height)/2 }" rpy="0 0 0" />
