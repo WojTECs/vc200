@@ -14,12 +14,12 @@ diff_drive:
 
   base_frame_id: $(arg robot_name)/base_footprint
   odom_frame_id: $(arg robot_name)/odom
-  wheel_separation: 0.302
+  wheel_separation: 0.31
   wheel_radius: 0.0675
 
   enable_odom_tf: false
   wheel_separation_multiplier: 1.0 # default: 1.0
-  wheel_radius_multiplier: 0.885 # default: 1.0
+  wheel_radius_multiplier: 1 # default: 1.0 or 0.885
   publish_cmd: false
 
 state: # nazwa kontrolera (zawsze musi byc zdefiniowana)
