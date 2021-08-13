@@ -57,7 +57,7 @@
     radius="0.035" 
     height="0.03"
     mass="0.17" >
-    <origin xyz="${-0.009} 0.0 ${0.015+chassis_height+clearence}" rpy="0.0 0.0 0.0"/>
+    <origin xyz="${-0.009} 0.0 ${0.015+chassis_height+clearence}" rpy="0.0 0.0 ${PI}"/>
   </xacro:lidar>
 
     <xacro:pozyx 
