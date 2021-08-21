@@ -70,7 +70,7 @@
       dz="${0.12+clearence+0.003/2}"
       ar="0.0"
       ap="0.0"
-      ay="0.0"
+      ay="${-PI/2}"
     />
 
     <xacro:imu 

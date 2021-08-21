@@ -11,6 +11,10 @@
 
         <rosparam file="$(find vc200_driver)/cfg/stm_config.yaml" subst_value="true" command="load" />
     </node>
+    <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn 
+    imu_sensor_controller 
+    state 
+    diff_drive" />
     <!-- <node name="imu_sensor_controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="imu_sensor_controller" /> -->
 
     <!-- <node name="imu_sensor_controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="imu_sensor_controller" /> -->
@@ -21,17 +25,6 @@
         front_right_velocity
         rear_left_velocity
         rear_right_velocity "/> -->
-    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" output="screen">
-        <rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load" />
-        <remap from="odometry/filtered" to="odometry" />
-    </node>
-
-
-    <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn 
-        imu_sensor_controller 
-        state 
-        diff_drive" 
-    />
 
 
     <node name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen">
@@ -45,14 +38,27 @@
     </node>
 
     <include file="$(find vc200_description)/launch/model.launch" />
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="pozyx_broadcaster" args="0 0 0 0 0 0 map vc200/pozyx_link 100" /> -->
+
     <include file="$(find pozyx_ros)/launch/pozyx.launch" />
-    
+
     <node name="map_server" pkg="map_server" type="map_server" args="$(find vc200_controller)/cfg/maps/map.yaml">
         <param name="frame_id" value="map" />
     </node>
 
+    <node name="ekf_localization" pkg="robot_localization" type="ekf_localization_node" output="screen">
+        <rosparam file="$(find vc200_controller)/cfg/ekf_localization.yaml" subst_value="true" command="load" />
+        <remap from="odometry/filtered" to="ekf_odom" />
+    </node>
+
+    <node name="ekf_localization_map" pkg="robot_localization" type="ekf_localization_node" output="screen">
+        <rosparam file="$(find vc200_controller)/cfg/ekf_localization_map.yaml" subst_value="true" command="load" />
+        <remap from="odometry/filtered" to="odometry" />
+    </node>
+
     <node pkg="amcl" type="amcl" name="amcl" output="screen">
-        <param name="tf_broadcast" value="true" />
+        <param name="tf_broadcast" value="false" />
 
         <param name="base_frame_id" value="vc200/base_footprint" /> <!-- Change this if you want to change your base frame id. -->
         <param name="odom_frame_id" value="vc200/odom" />
@@ -90,32 +96,27 @@
     <arg name="use_tf_static" default="true" />
     <!-- <arg name="model" default="$(find vc200_description)/urdf/test.xacro" /> -->
 
-    <arg name="paused" default="false" />
+    <!-- <arg name="paused" default="false" />
     <arg name="gui" default="true" />
     <arg name="headless" default="false" />
     <arg name="debug" default="false" />
     <arg name="gui_required" default="true" />
     <arg name="mesh_enabled" default="true" />
-<!-- 
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <remap from="cmd_vel" to="/diff_drive/cmd_vel"/>
+        <rosparam file="$(find vc200_controller)/cfg/nav/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find vc200_controller)/cfg/nav/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find vc200_controller)/cfg/nav/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find vc200_controller)/cfg/nav/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find vc200_controller)/cfg/nav/base_local_planner_params.yaml" command="load" />
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+        <param name="planner_frequency" value="1.0" />
+        <param name="planner_patience" value="5.0" />
 
-    <arg name="robot_namespace" default="/" />
-    <group ns="/">
+        <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+        <param name="controller_frequency" value="5.0" />
+        <param name="controller_patience" value="15.0" />
+    </node> -->
 
-        <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-            <remap from="cmd_vel" to="/diff_drive/cmd_vel"/>
-            <rosparam file="$(find vc200_controller)/cfg/nav/costmap_common_params.yaml" command="load" ns="global_costmap" />
-            <rosparam file="$(find vc200_controller)/cfg/nav/costmap_common_params.yaml" command="load" ns="local_costmap" />
-            <rosparam file="$(find vc200_controller)/cfg/nav/local_costmap_params.yaml" command="load" />
-            <rosparam file="$(find vc200_controller)/cfg/nav/global_costmap_params.yaml" command="load" />
-            <rosparam file="$(find vc200_controller)/cfg/nav/base_local_planner_params.yaml" command="load" />
-            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
-            <param name="planner_frequency" value="1.0" />
-            <param name="planner_patience" value="5.0" />
-
-            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
-            <param name="controller_frequency" value="5.0" />
-            <param name="controller_patience" value="15.0" />
-        </node>
-    </group> -->
 
 </launch>
