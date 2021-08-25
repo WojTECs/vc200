@@ -97,7 +97,7 @@
     <!-- <arg name="model" default="$(find vc200_description)/urdf/test.xacro" /> -->
 
     <!-- <arg name="paused" default="false" />
-    <arg name="gui" default="true" />
+    <arg name="gui" default="true" /> -->
     <arg name="headless" default="false" />
     <arg name="debug" default="false" />
     <arg name="gui_required" default="true" />
@@ -116,7 +116,7 @@
         <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
         <param name="controller_frequency" value="5.0" />
         <param name="controller_patience" value="15.0" />
-    </node> -->
+    </node>
 
 
 </launch>
