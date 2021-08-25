@@ -11,7 +11,7 @@ imu:
   velocity_covariance: [0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005]
   orientation_covariance: [-1.0, 0, 0, 0, -1.0, 0, 0, 0, -1.0]
   
-  gyro_offset: [-0.0, -0.0, 0.0]
+  gyro_offset: [-0.0, -0.0, -0.0072936]
   acc_offset: [-0.0, -0.0, 0.0]
   mag_offset: [0.0, 0.0, 0.0]
   mag_scale: [0.0, 0.0, 0.0]
