@@ -1,8 +1,7 @@
 
 #---standard pioneer footprint---
 #---(in meters)---
-robot_radius: 0.20
-footprint_padding: 0.00
+footprint: [[0.25,-0.2],[0.25,0.2],[0.05,0.2],[0.05,0.1],[-0.18,0.1],[-0.18,-0.1],[0.05,-0.1],[0.05,-0.2]]
 
 transform_tolerance: 0.2
 map_type: costmap
