@@ -12,7 +12,7 @@
 #include "stalker_driver/STInterfaceClientUDP.h"
 #include "stalker_driver/current_measurement.h"
 #include "stalker_driver/motor_controller.h"
-
+#include "std_srvs/SetBool.h"
 namespace vc200_driver {
 struct joint_state {
   joint_state() : position(0.0), velocity(0.0), effort(0.0) {}
@@ -38,10 +38,12 @@ class MotorController {
   void writeData();
 
  private:
+  bool pidState_;
   PID leftChannelPid_, rightChannelPid_;
+  bool pidServiceCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
   // char currentFileName[50];
   // std::ofstream currentLogFile;
-
+  ros::ServiceServer pidService;
   joint_state leftJointState;
   joint_state rightJointState;
   double leftVelocityCommand;
