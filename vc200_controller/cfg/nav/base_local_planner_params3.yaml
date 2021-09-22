@@ -1,0 +1,12 @@
+TrajectoryPlannerROS:
+  acc_lim_th: 0.5
+  acc_lim_x: 0.5
+  acc_lim_y: 0.5
+  max_vel_x: 0.4
+  min_vel_x: 0
+  max_rotational_vel: 0.4
+  min_in_place_rotational_vel: 0.1
+
+  sim_time: 1.8
+  sim_granularity: 0.015
+  angular_sim_granularity: 0.015

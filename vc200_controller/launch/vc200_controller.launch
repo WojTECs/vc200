@@ -108,12 +108,26 @@
         <rosparam file="$(find vc200_controller)/cfg/nav/costmap_common_params.yaml" command="load" ns="local_costmap" />
         <rosparam file="$(find vc200_controller)/cfg/nav/local_costmap_params.yaml" command="load" />
         <rosparam file="$(find vc200_controller)/cfg/nav/global_costmap_params.yaml" command="load" />
-        <rosparam file="$(find vc200_controller)/cfg/nav/base_local_planner_params.yaml" command="load" />
+        
         <param name="base_global_planner" value="global_planner/GlobalPlanner" />
         <param name="planner_frequency" value="1.0" />
         <param name="planner_patience" value="5.0" />
-
+        
+        <rosparam file="$(find vc200_controller)/cfg/nav/base_local_planner_params3.yaml" command="load" />
+        <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS" />
+        
+        <!-- <rosparam file="$(find vc200_controller)/cfg/nav/teb_local_planner_params2.yaml" command="load" />
         <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+       
+        <rosparam file="$(find vc200_controller)/cfg/nav/dwa_local_planner_params1.yaml" command="load" />
+        <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+
+        <rosparam file="$(find vc200_controller)/cfg/nav/eband_local_planner_params3.yaml" command="load" />
+        <param name="base_local_planner" value="eband_local_planner/EBandPlannerROS" />
+
+        <rosparam file="$(find vc200_controller)/cfg/nav/mpc_local_planner_params1.yaml" command="load" />
+        <param name="base_local_planner" value="mpc_local_planner/MpcLocalPlannerROS" /> -->
+            
         <param name="controller_frequency" value="5.0" />
         <param name="controller_patience" value="15.0" />
     </node>
