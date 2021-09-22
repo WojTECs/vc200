@@ -9,12 +9,14 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   , stClient_(st_if)
   , nh_(nh)
   , leftChannelPid_(nh, "pid/left")
-  , rightChannelPid_(nh, "pid/right") {
+  , rightChannelPid_(nh, "pid/right")
+  , pidState_(true) {
   stClient_->addExpectedDataType(motorUpstream);
   stClient_->addExpectedDataType(encUpstream);
   stClient_->addExpectedDataType(currentUpstream);
 
   priv_nh_ = ros::NodeHandle(nh_, "motor_contoller");
+  pidService = priv_nh_.advertiseService("turn_off_PID", &MotorController::pidServiceCallback, this);
 
   std::string joint_left_name;
   joint_left_name = "left_wheel";
@@ -45,7 +47,7 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
   leftJointHandle = left_joint_handle;
 
   hardware_interface::JointStateHandle right_joint_state_handle(joint_right_name, &rightJointState.position,
-                                                          &rightJointState.velocity, &rightJointState.effort);
+                                                                &rightJointState.velocity, &rightJointState.effort);
 
   hardware_interface::JointHandle right_joint_handle(right_joint_state_handle, &rightVelocityCommand);
   rightJointHandle = right_joint_handle;
@@ -63,7 +65,29 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
 
   // command timeout
 }
+bool MotorController::pidServiceCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res) {
+  if (req.data) {
+    if (pidState_) {
+      pidState_ = false;
+      res.message = "PID turned off";
+      res.success = true;
+    } else {
+      res.message = "PID already turned off";
+      res.success = true;
+    }
+  } else {
+    if (!pidState_) {
+      pidState_ = true;
+      res.message = "PID turned on";
+      res.success = true;
+    } else {
+      res.message = "PID already turned on";
+      res.success = true;
+    }
+  }
 
+  return true;
+}
 void MotorController::sendCommand(Interface::DownstreamData::MovementCommandDataset cmd) {
   motorDownstream->setCommand(cmd);
   stClient_->publishData(*motorDownstream);
@@ -104,27 +128,48 @@ void MotorController::readData() {
 
 void MotorController::writeData() {
   Interface::DownstreamData::MovementCommandDataset cmd;
+  if (pidState_) {
+    cmd.leftSidePWM = leftChannelPid_.getControll();
+    cmd.rightSidePWM = rightChannelPid_.getControll();
 
-  cmd.leftSidePWM = leftChannelPid_.getControll();
-  cmd.rightSidePWM = rightChannelPid_.getControll();
+    if (cmd.leftSidePWM != 0.0) {
+      cmd.leftDirection = (leftChannelPid_.getPoint() > 0) ? 1 : 2;
+      cmd.leftSidePWM = abs(cmd.leftSidePWM);
+    } else {
+      cmd.leftDirection = 0;
+    }
+
+    if (cmd.rightSidePWM != 0.0) {
+      cmd.rightDirection = (rightChannelPid_.getPoint() > 0) ? 1 : 2;
+      cmd.rightSidePWM = abs(cmd.rightSidePWM);
+    } else {
+      cmd.rightDirection = 0;
+    }
+
+  } else {
+    cmd.leftSidePWM = leftVelocityCommand;
+    cmd.rightSidePWM = rightVelocityCommand;
+
+    if (cmd.leftSidePWM != 0.0) {
+      cmd.leftDirection = (leftVelocityCommand > 0) ? 1 : 2;
+      cmd.leftSidePWM = abs(cmd.leftSidePWM);
+    } else {
+      cmd.leftDirection = 0;
+    }
+
+    if (cmd.rightSidePWM != 0.0) {
+      cmd.rightDirection = (rightVelocityCommand > 0) ? 1 : 2;
+      cmd.rightSidePWM = abs(cmd.rightSidePWM);
+    } else {
+      cmd.rightDirection = 0;
+    }
+  }
   // std::cout << "\x1B[2J\x1B[H";
   // std::cout << "cmd.leftSidePWM: " << cmd.leftSidePWM << std::endl;
   // std::cout << "cmd.rightSidePWM: " << cmd.rightSidePWM << std::endl;
   // std::cout << "leftVelocityCommand: " << leftVelocityCommand << std::endl;
   // std::cout << "rightVelocityCommand: " << rightVelocityCommand << std::endl;
-  if (cmd.leftSidePWM != 0.0) {
-    cmd.leftDirection = (leftChannelPid_.getPoint() > 0) ? 1 : 2;
-    cmd.leftSidePWM = abs(cmd.leftSidePWM);
-  } else {
-    cmd.leftDirection = 0;
-  }
 
-  if (cmd.rightSidePWM != 0.0) {
-    cmd.rightDirection = (rightChannelPid_.getPoint() > 0) ? 1 : 2;
-    cmd.rightSidePWM = abs(cmd.rightSidePWM);
-  } else {
-    cmd.rightDirection = 0;
-  }
   cmd.shallQueue = 0;
   cmd.timeToDrive = 500;
 
