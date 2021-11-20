@@ -1,0 +1,28 @@
+KJDWAPlannerROS: 
+  acc_lim_th: 3.1415
+  acc_lim_x: 2.0
+  acc_lim_y: 0
+  max_vel_x: 0.75
+  min_vel_x: 0.1
+  max_vel_y: 0
+  min_vel_y: 0
+  max_vel_trans: 0.55
+  min_vel_trans: 0
+  max_vel_theta: 3.1415
+  min_vel_theta: 0.1
+  controller_frequency: 3
+  sim_time: 0.9 #1.7 old
+  sim_granularity: 0.05
+
+  stop_time_buffer: 0.05
+  forward_point_distance: 0.1
+
+  
+  goal_distance_bias: 3
+  path_distance_bias: 28.0
+  occdist_scale: 0.01
+
+  scaling_speed: 0.9
+
+  yaw_goal_tolerance: 0.3
+  xy_goal_tolerance: 0.1
