@@ -3,17 +3,10 @@
 
 diff_drive:
   type: "diff_drive_controller/DiffDriveController"
-  left_wheel:
-    [
-      "$(arg robot_name)/front_left_wheel_joint",
-      "$(arg robot_name)/rear_left_wheel_joint",
-    ]
-  right_wheel:
-    [
-      "$(arg robot_name)/front_right_wheel_joint",
-      "$(arg robot_name)/rear_right_wheel_joint",
-    ]
-  publish_rate: 100
+  left_wheel: "$(arg robot_name)/left_wheel_joint"
+  right_wheel: "$(arg robot_name)/right_wheel_joint"
+
+  publish_rate: 50
   pose_covariance_diagonal:
     [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 0.03]
   twist_covariance_diagonal: [0.001, 0.001, 0.001, 1000000.0, 1000000.0, 0.03]
@@ -21,13 +14,13 @@ diff_drive:
 
   base_frame_id: $(arg robot_name)/base_footprint
   odom_frame_id: $(arg robot_name)/odom
-  wheel_separation: 0.3
+  wheel_separation: 0.31
   wheel_radius: 0.0675
 
-  enable_odom_tf: true
+  enable_odom_tf: false
   wheel_separation_multiplier: 1.0 # default: 1.0
-  wheel_radius_multiplier: 0.885 # default: 1.0
-
+  wheel_radius_multiplier: 1 # default: 1.0 or 0.885
+  publish_cmd: false
 
 state: # nazwa kontrolera (zawsze musi byc zdefiniowana)
   type: joint_state_controller/JointStateController # typ kontrolera (zawsze musi byc zdefiniowany)
@@ -37,18 +30,10 @@ imu_sensor_controller:
   type: imu_sensor_controller/ImuSensorController
   publish_rate: 100
 
-front_left_velocity:
+left_velocity:
   type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/front_left_wheel_joint
+  joint: $(arg robot_name)/left_wheel_joint
 
-front_right_velocity:
+right_velocity:
   type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/front_right_wheel_joint
-
-rear_left_velocity:
-  type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/rear_left_wheel_joint
-
-rear_right_velocity:
-  type: velocity_controllers/JointVelocityController
-  joint: $(arg robot_name)/rear_right_wheel_joint
+  joint: $(arg robot_name)/right_wheel_joint

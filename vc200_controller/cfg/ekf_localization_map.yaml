@@ -11,6 +11,7 @@ transform_time_offset: 0.1
 
 smooth_lagged_data: true
 dynamic_process_noise_covariance: false
+history_length: 10
 
 odom0: /diff_drive/odom
 odom0_config: [ false,  false,  false,
@@ -18,48 +19,37 @@ odom0_config: [ false,  false,  false,
                 true,   true,  false, # Do estymaty wez predkosci liniowe x i y...
                 false,  false,  true, # wez predkosc katowa w osi z
                 false,  false,  false]
-odom0_differential: false
+odom0_differential: true
 
 imu0: /stm_imu #_filtered
 imu0_config: [  false,  false,  false,
                 false,  false,  false,
                 false,  false,  false,
-                true,  true,  true, # Wez predkosc katowa w osi z do estymaty
-                true,   true,  true]
-
+                false,  false,  true, 
+                false,   false,  false]
 imu0_differential: true
 imu0_relative: true 
 
-pose0: hedge_pose # Hedgehog!
-pose0_config: [true,  true,  false,
-               false, false, false,
-               false, false, false,
-               false, false, false,
-               false, false, false]
 
-pose0_rejection_threshold: 3
-
-# Since AMCL is more likely to fail than the beacons, you might want to treat the beacons
-# as a primary source, and set pose1_differential: true
-# In that case, set x', y' and yaw' to true, and the rest to false!
-
-pose1: amcl_pose # AMCL!
-pose1_config: [true,  true, false,
+pose0: /amcl_pose # AMCLs
+pose0_config: [true,  true, false,
                false, false, true,
                false, false, false,
                false, false, false,
                false, false, false]
 
-pose1_rejection_threshold: 2
+# pose0_rejection_threshold: 1
 
-pose2: pozyx_pose # Hedgehog!
-pose2_config: [true,  true,  false,
+pose1: /pozyx_pose # pozyx
+pose1_config: [true,  true,  false,
                false, false, false,
                false, false, false,
                false, false, false,
                false, false, false]
+# pose1_rejection_threshold: 3
 
-pose2_rejection_threshold: 3
+
+pose1_rejection_threshold: 3
 
 # poseN_rejection_threshold: (YOU MIGHT WANT THIS. If it's above the stated threshold value, the EKF will ignore the reading) (Defaults to numeric_limits<double>::max())
 

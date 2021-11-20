@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro">
-<!-- <robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
+<!-- <robot name="$(arg robot_name)" xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
+<robot name="vc200" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="$(find vc200_description)/urdf/parameters.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/macros.xacro" />
@@ -15,82 +15,70 @@
       width="${chassis_width}"
       height="${chassis_height}"
       clearence="${clearence}"
+      offset="${-wheelbase/4.0}"
+      mass="${chassis_mass}"
     />
     <xacro:wheel 
-      name="${robot_name}/front_left_wheel"
+      name="${robot_name}/left_wheel"
       radius="${wheel_radius}"
       width="${wheel_width}"
-      dx="${wheelbase/2.0}"
+      mass="${wheel_mass}"
+      dx="${wheelbase/4.0}"
       dy="${wheel_separation/2.0}"
     />
     <xacro:wheel 
-      name="${robot_name}/front_right_wheel"
+      name="${robot_name}/right_wheel"
       radius="${wheel_radius}"
+      mass="${wheel_mass}"
       width="${wheel_width}"
-      dx="${wheelbase/2.0}"
+      dx="${wheelbase/4.0}"
       dy="-${wheel_separation/2.0}"
     />
-    <xacro:wheel 
-      name="${robot_name}/rear_left_wheel"
-      radius="${wheel_radius}"
-      width="${wheel_width}"
-      dx="-${wheelbase/2.0}"
-      dy="${wheel_separation/2.0}"
-    />
-    <xacro:wheel 
-      name="${robot_name}/rear_right_wheel"
-      radius="${wheel_radius}"
-      width="${wheel_width}"
-      dx="-${wheelbase/2.0}"
-      dy="-${wheel_separation/2.0}"
-    />
+    <xacro:caster_wheel name="${robot_name}/caster_right" 
+    radius="0.0125" 
+    mass="0.01" 
+    dx="${-wheelbase/4.0 -0.15}" 
+    dy="-0.05" 
+    offset="0.014" 
+    height="0.035" 
+    width="0.007" />
 
-  
-    <xacro:lidar 
-      name="${robot_name}/lidar"
-      radius="0.035" 
-      length="0.022" 
-      dx="0.0425" 
-      dy="0.0" 
-      dz="0.205"
-      ar="0.0" 
-      ap="0.0" 
-      ay="${PI}"
-    />
-    <!-- radius="0.035" 
-    length="0.0022"  -->
+  <xacro:caster_wheel name="${robot_name}/caster_left" 
+    radius="0.0125" 
+    mass="0.01" 
+    dx="${-wheelbase/4.0 -0.15}" 
+    dy="0.05" 
+    offset="0.014" 
+    height="0.035" 
+    width="0.007" />
+
+  <xacro:lidar 
+    name="${robot_name}/lidar"
+    radius="0.035" 
+    height="0.03"
+    mass="0.17" >
+    <origin xyz="${-0.009} 0.0 ${0.015+chassis_height+clearence}" rpy="0.0 0.0 ${PI}"/>
+  </xacro:lidar>
 
     <xacro:pozyx 
       name="${robot_name}/pozyx"
       length="0.008"
       width="0.006"
       height="0.003"
-      dx="-0.025"
+      dx="${-0.025-wheelbase/2.0}"
       dy="0.045"
       dz="${0.12+clearence+0.003/2}"
       ar="0.0"
       ap="0.0"
-      ay="0.0"
+      ay="${-PI/2}"
     />
 
-    <xacro:marvelmind 
-      name="${robot_name}/marvelmind"
-      length ="0.055"
-      width ="0.055"
-      height ="0.033"
-      dx="0.1575"
-      dy="${-(chassis_width/2)+0.055/2+0.004}"
-      dz="0.14"
-      ar="0.0"
-      ap="0.69813170079"
-      ay="0.0"
-    />
     <xacro:imu 
       name="${robot_name}/stm_imu"
       length="0.008"
       width="0.006"
       height="0.003"
-      dx="-0.025"
+      dx="${-0.025 -wheelbase/2.0}"
       dy="0.045"
       dz="${0.12+clearence+0.003/2 - 0.02}"
       ar="0.0"
@@ -101,9 +89,8 @@
     <xacro:arg name="use_nominal_extrinsics" default="true" />
     <xacro:include filename="$(find vc200_description)/realsense2_description/urdf/_d435i.urdf.xacro"/>
 
-    <!-- <link name="base_link" /> -->
     <xacro:sensor_d435i parent="${robot_name}/base_footprint" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
-      <origin xyz="${chassis_length/2 + 0.0149} 0 0.135" rpy="0 0 0"/>
+      <origin xyz="${chassis_length/2 + 0.0149 -wheelbase/2.0} 0 0.135" rpy="0 0 0"/>
     </xacro:sensor_d435i>
 
 </robot>

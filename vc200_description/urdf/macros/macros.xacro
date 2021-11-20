@@ -8,4 +8,6 @@
     <xacro:include filename="$(find vc200_description)/urdf/macros/marvelmind.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/lidar.xacro" />
     <xacro:include filename="$(find vc200_description)/urdf/macros/imu.xacro" />
+    <xacro:include filename="$(find vc200_description)/urdf/macros/caster_wheel.xacro" />
+    <xacro:include filename="$(find vc200_description)/urdf/macros/inertia.xacro" />
 </robot>

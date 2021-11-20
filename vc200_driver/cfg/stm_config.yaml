@@ -7,12 +7,12 @@ laser_ruler:
 imu:
   frame_id: "$(arg robot_name)/stm_imu_link"
   name: "stm_imu"
-  acceleration_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
-  velocity_covariance: [0.001, 0, 0, 0, 0.001, 0, 0, 0, 0.001]
+  acceleration_covariance: [0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005]
+  velocity_covariance: [0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005]
   orientation_covariance: [-1.0, 0, 0, 0, -1.0, 0, 0, 0, -1.0]
-  gyro_offset:
-    [-0.00940652984481903, -0.006390291507488461, 0.0016867405806967803]
-  acc_offset: [-0.07408764347527157, -0.15995660294145872, 0.230708478]
+  
+  gyro_offset: [-0.0, -0.0, -0.0040462]
+  acc_offset: [-0.0, -0.0, 0.0]
   mag_offset: [0.0, 0.0, 0.0]
   mag_scale: [0.0, 0.0, 0.0]
   # mag_offset: [-644.25, 236.25, 731.4]
@@ -22,35 +22,32 @@ motor_contoller:
   max_command: 1000.0
   encoders_resolution: 6532
   joint:
-    front_left:
-      name: $(arg robot_name)/front_left_wheel_joint
-    front_right:
-      name: $(arg robot_name)/front_right_wheel_joint
-    rear_left:
-      name: $(arg robot_name)/rear_left_wheel_joint
-    rear_right:
-      name: $(arg robot_name)/rear_right_wheel_joint
+    left:
+      name: $(arg robot_name)/left_wheel_joint
+    right:
+      name: $(arg robot_name)/right_wheel_joint
+
 
 pid:
   right:
-    Kp: 20.0
-    Ki: 5.0
-    Kd: 0.5
+    Kp: 22.0
+    Ki: 27.0
+    Kd: 0.1
     upperLimit: 1000.0
     lowerLimit: -1000.0
-    alfa: 0.07
+    alfa: 0.01
     windup: 1000.0
     timeout: 5
     downLimitOn: true
     upLimitOn: true
     windupOn: true
   left:
-    Kp: 20.0
-    Ki: 5.0
-    Kd: 0.5
+    Kp: 22.0
+    Ki: 27.0
+    Kd: 0.1
     upperLimit: 1000.0
     lowerLimit: -1000.0
-    alfa: 0.07
+    alfa: 0.01
     windup: 1000.0
     timeout: 5
     downLimitOn: true

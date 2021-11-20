@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!--ixx ixy ixz
+        iyx iyy iyz
+        izx izy izx] -->
+
+    <xacro:macro name="cuboid_inertia" params="x y z mass *origin">
+        <inertial>
+            <mass value="${mass}" />
+            <xacro:insert_block name="origin" />
+            <inertia ixx="${0.0833333333 * mass * (y*y + z*z)}" ixy="0.0" ixz="0.0" 
+                    iyy="${0.0833333333 * mass * (x*x + z*z)}" iyz="0.0" 
+                    izz="${0.0833333333 * mass * (x*x + y*y)}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="cylinder_inertia" params="radius length mass *origin">
+        <inertial>
+            <mass value="${mass}" />
+            <xacro:insert_block name="origin" />
+            <inertia ixx="${0.0833333333 * mass * (3.0 * radius * radius + length * length)}" ixy="0.0" ixz="0.0" 
+                    iyy="${0.0833333333 * mass * (3.0 * radius * radius + length * length)}" iyz="0.0" 
+                    izz="${0.5 * mass * radius * radius}" />
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="sphere_inertia" params="radius mass *origin">
+        <inertial>
+            <mass value="${mass}" />
+            <xacro:insert_block name="origin" />
+            <inertia ixx="${0.4 * mass * radius * radius}" ixy="0.0" ixz="0.0" 
+                    iyy="${0.4 * mass * radius * radius }" iyz="0.0" 
+                    izz="${0.4 * mass * radius * radius }" />
+        </inertial>
+    </xacro:macro>
+
+</robot>
