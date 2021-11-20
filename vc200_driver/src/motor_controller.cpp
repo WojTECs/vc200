@@ -1,5 +1,5 @@
 #include "vc200_driver/motor_controller.h"
-
+#define CURREN_LOG
 namespace vc200_driver {
 MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientUDP> st_if, ros::NodeHandle &nh)
   : motorDownstream(new Interface::DownstreamData::MovementOrderLeftRightFrame)
@@ -51,18 +51,18 @@ MotorController::MotorController(std::shared_ptr<STInterface::STInterfaceClientU
 
   hardware_interface::JointHandle right_joint_handle(right_joint_state_handle, &rightVelocityCommand);
   rightJointHandle = right_joint_handle;
-
-  // time_t rawtime;
-  // struct tm *timeinfo;
-  // time(&rawtime);
-  // timeinfo = localtime(&rawtime);
-  // strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
-  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
-  // if (currentLogFile.is_open()) {
-  //   currentLogFile.close();
-  //   std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
-  // }
-
+#ifdef CURREN_LOG
+  time_t rawtime;
+  struct tm *timeinfo;
+  time(&rawtime);
+  timeinfo = localtime(&rawtime);
+  strftime(currentFileName, sizeof(currentFileName), "current log %d-%m-%Y %H:%M:%S", timeinfo);
+  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  if (currentLogFile.is_open()) {
+    currentLogFile.close();
+    std::cout << "Created file with current extended log with name: " << currentFileName << std::endl;
+  }
+#endif
   // command timeout
 }
 bool MotorController::pidServiceCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res) {
@@ -103,15 +103,16 @@ void MotorController::readData() {
   encUpstream->readData(encData);
   currentUpstream->readData(currentData, currentVector, leftJointState.velocity, rightJointState.velocity,
                             leftJointState.position, rightJointState.position);
-
-  // currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
-  // uint64_t timestamp = ros::Time::now().toNSec();
-  // currentLogFile.write((char*)&timestamp, sizeof(timestamp));
-  // size_t size = currentVector.size();
-  // currentLogFile.write((char*)&size, sizeof(size));
-  // currentLogFile.write((char*)&currentVector[0], currentVector.size() *
-  // sizeof(Interface::UpstreamData::CurrentMeasurementDataset)); currentLogFile.close();
-
+#ifdef CURREN_LOG
+  currentLogFile.open(currentFileName, std::ios::app | std::ios::out | std::ios::binary);
+  uint64_t timestamp = ros::Time::now().toNSec();
+  currentLogFile.write((char *)&timestamp, sizeof(timestamp));
+  size_t size = currentVector.size();
+  currentLogFile.write((char *)&size, sizeof(size));
+  currentLogFile.write((char *)&currentVector[0],
+                       currentVector.size() * sizeof(Interface::UpstreamData::CurrentMeasurementDataset));
+  currentLogFile.close();
+#endif
   leftChannelPid_.setPoint(leftVelocityCommand);
   rightChannelPid_.setPoint(rightVelocityCommand);
   leftChannelPid_.update(encData.leftSideVelocity.value);

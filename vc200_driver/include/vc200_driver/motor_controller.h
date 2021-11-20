@@ -41,8 +41,8 @@ class MotorController {
   bool pidState_;
   PID leftChannelPid_, rightChannelPid_;
   bool pidServiceCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res);
-  // char currentFileName[50];
-  // std::ofstream currentLogFile;
+  char currentFileName[50];
+  std::ofstream currentLogFile;
   ros::ServiceServer pidService;
   joint_state leftJointState;
   joint_state rightJointState;
